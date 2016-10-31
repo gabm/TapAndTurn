@@ -1,4 +1,4 @@
-package com.gabm.screenrotationcontrol.ui;
+package com.gabm.tapandturn.ui;
 
 import android.content.Context;
 import android.graphics.PixelFormat;

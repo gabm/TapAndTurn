@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.gabm.screenrotationcontrol.MainActivity"
+    tools:context="com.gabm.tapandturn.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <Switch

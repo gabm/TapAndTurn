@@ -1,4 +1,4 @@
-package com.gabm.screenrotationcontrol.sensors;
+package com.gabm.tapandturn.sensors;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;

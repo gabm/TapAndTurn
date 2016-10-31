@@ -1,4 +1,4 @@
-package com.gabm.screenrotationcontrol;
+package com.gabm.tapandturn;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.gabm.screenrotationcontrol.services.ServiceRotationControlService;
+import com.gabm.tapandturn.services.ServiceRotationControlService;
 
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
     private Switch serviceStateSwitch;

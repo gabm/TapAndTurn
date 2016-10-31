@@ -1,4 +1,4 @@
-package com.gabm.screenrotationcontrol.services;
+package com.gabm.tapandturn.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,12 +14,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.gabm.screenrotationcontrol.MainActivity;
-import com.gabm.screenrotationcontrol.R;
-import com.gabm.screenrotationcontrol.sensors.AndroidOrientationSettings;
-import com.gabm.screenrotationcontrol.sensors.PhysicalOrientationSensor;
-import com.gabm.screenrotationcontrol.ui.ScreenRotatorOverlay;
-import com.gabm.screenrotationcontrol.ui.OrientationButtonOverlay;
+import com.gabm.tapandturn.MainActivity;
+import com.gabm.tapandturn.R;
+import com.gabm.tapandturn.sensors.AndroidOrientationSettings;
+import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
+import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
+import com.gabm.tapandturn.ui.OrientationButtonOverlay;
 
 /**
  * Created by gabm on 30.10.16.
@@ -119,7 +119,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)  // the status icon
+                .setSmallIcon(android.R.drawable.ic_menu_rotate)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
                 .setContentTitle(getText(R.string.orientation_service_label))  // the label of the entry
