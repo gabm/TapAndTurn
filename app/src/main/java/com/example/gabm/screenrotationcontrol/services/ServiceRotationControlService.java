@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.SensorManager;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -40,7 +39,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = R.string.local_service_started;
+    private int NOTIFICATION = R.string.orientation_service_started;
     private int handlerScreenOrientation;
 
     @Override
@@ -99,7 +98,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         mNM.cancel(NOTIFICATION);
 
         // Tell the user we stopped.
-        Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.orientation_service_stopped, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
      */
     private void showNotification() {
         // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.local_service_started);
+        CharSequence text = getText(R.string.orientation_service_started);
 
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -123,7 +122,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
+                .setContentTitle(getText(R.string.orientation_service_label))  // the label of the entry
                 .setContentText(text)  // the contents of the entry
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
                 .setPriority(Notification.PRIORITY_MIN)

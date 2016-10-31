@@ -7,6 +7,8 @@
     <ImageButton
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@android:drawable/ic_menu_rotate"
-        android:id="@+id/imageButton" />
+        android:src="@android:drawable/ic_menu_rotate"
+        android:id="@+id/imageButton"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:scaleType="fitXY" />
 </LinearLayout>

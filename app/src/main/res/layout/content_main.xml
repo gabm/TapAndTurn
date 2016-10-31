@@ -18,6 +18,6 @@
         android:id="@+id/service_state_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TestText" />
+        android:text="@string/service_running" />
 
 </LinearLayout>
