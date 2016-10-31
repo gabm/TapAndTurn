@@ -5,5 +5,8 @@
     <string name="orientation_service_stopped">Orientation Service Stopped</string>
     <string name="orientation_service_label">Orientation Service</string>
     <string name="service_running">Service Running</string>
+    <string name="request_permission">Request Permission</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_missing">Permission is missing, cannot start service!</string>
 
 </resources>

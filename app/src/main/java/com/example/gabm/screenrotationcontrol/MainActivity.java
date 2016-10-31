@@ -6,21 +6,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.gabm.screenrotationcontrol.services.ServiceRotationControlService;
 
-public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
     private Switch serviceStateSwitch;
+    private Button requestPermissionButton;
     private String PREFS_KEY_SERVICESTATE = "ServiceState";
     private SharedPreferences prefs;
 
@@ -32,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         setSupportActionBar(toolbar);
 
         prefs = getSharedPreferences("ScreenRotationControl", MODE_PRIVATE);
-        checkDrawOverlayPermission();
 
         serviceStateSwitch = (Switch)findViewById(R.id.service_state_switch);
         serviceStateSwitch.setOnCheckedChangeListener(this);
+
+        requestPermissionButton = (Button)findViewById(R.id.request_button);
+        requestPermissionButton.setOnClickListener(this);
     }
 
     @Override
@@ -63,13 +66,12 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     /** code to post/handler request for permission */
     public final static int REQUEST_CODE = 5463;
 
-    public void checkDrawOverlayPermission() {
+    public void requestPermission() {
         /** check if we already  have permission to draw over other apps */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(getApplicationContext())) {
                 /** if not construct intent to request permission */
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                 /** request permission via start activity for result */
                 startActivityForResult(intent, REQUEST_CODE);
             }
@@ -78,15 +80,15 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
-        /** check if received result code
-         is equal our requested code for draw permission  */
-        if (requestCode == REQUEST_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Settings.canDrawOverlays(this)) {
-                    setServiceState(true);
-                }
-            }
-        }
+        if (requestCode == REQUEST_CODE)
+            setPermissionGranted(hasPermissionToDrawOverApps());
+    }
+
+    private boolean hasPermissionToDrawOverApps() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return Settings.canDrawOverlays(this);
+        else
+            return true;
     }
 
     @Override
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         Log.i("Main", "started");
         super.onStart();
         setServiceState(prefs.getBoolean(PREFS_KEY_SERVICESTATE, false));
+        setPermissionGranted(hasPermissionToDrawOverApps());
     }
 
     @Override
@@ -112,11 +115,32 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
     private void setServiceState(boolean started) {
         if (started) {
-            startService(new Intent(this, ServiceRotationControlService.class));
+            if (hasPermissionToDrawOverApps()) {
+                startService(new Intent(this, ServiceRotationControlService.class));
+                serviceStateSwitch.setChecked(true);
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.permission_missing, Toast.LENGTH_SHORT).show();
+                serviceStateSwitch.setChecked(false);
+            }
         } else {
             stopService(new Intent(this, ServiceRotationControlService.class));
+            serviceStateSwitch.setChecked(false);
         }
 
-        serviceStateSwitch.setChecked(started);
+    }
+
+    private void setPermissionGranted(boolean granted) {
+        requestPermissionButton.setEnabled(!granted);
+
+        if (granted)
+            requestPermissionButton.setText(R.string.permission_granted);
+        else
+            requestPermissionButton.setText(R.string.request_permission);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (!hasPermissionToDrawOverApps())
+            requestPermission();
     }
 }
