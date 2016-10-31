@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ScreenRotationControl</string>
+    <string name="action_settings">Settings</string>
+    <string name="local_service_started">Local Service Started</string>
+    <string name="local_service_stopped">Local Service Stopped</string>
+    <string name="local_service_label">Local Service Label</string>
+
+</resources>
