@@ -78,7 +78,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
 
-        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_UI, this);
+        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
         androidOrientationSettings = new AndroidOrientationSettings(getApplicationContext());
         physicalOrientationSensor.enable();
     }
