@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol.ui;
+package com.gabm.screenrotationcontrol.ui;
 
 import android.content.Context;
 import android.graphics.PixelFormat;

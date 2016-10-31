@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol.services;
+package com.gabm.screenrotationcontrol.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,12 +14,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.example.gabm.screenrotationcontrol.MainActivity;
-import com.example.gabm.screenrotationcontrol.R;
-import com.example.gabm.screenrotationcontrol.sensors.AndroidOrientationSettings;
-import com.example.gabm.screenrotationcontrol.sensors.PhysicalOrientationSensor;
-import com.example.gabm.screenrotationcontrol.ui.ScreenRotatorOverlay;
-import com.example.gabm.screenrotationcontrol.ui.OrientationButtonOverlay;
+import com.gabm.screenrotationcontrol.MainActivity;
+import com.gabm.screenrotationcontrol.R;
+import com.gabm.screenrotationcontrol.sensors.AndroidOrientationSettings;
+import com.gabm.screenrotationcontrol.sensors.PhysicalOrientationSensor;
+import com.gabm.screenrotationcontrol.ui.ScreenRotatorOverlay;
+import com.gabm.screenrotationcontrol.ui.OrientationButtonOverlay;
 
 /**
  * Created by gabm on 30.10.16.

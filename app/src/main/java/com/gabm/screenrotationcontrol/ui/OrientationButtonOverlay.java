@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol.ui;
+package com.gabm.screenrotationcontrol.ui;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.example.gabm.screenrotationcontrol.R;
+import com.gabm.screenrotationcontrol.R;
 
 /**
  * Created by gabm on 31.10.16.

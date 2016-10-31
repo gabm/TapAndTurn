@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol.sensors;
+package com.gabm.screenrotationcontrol.sensors;
 
 import android.content.Context;
 
