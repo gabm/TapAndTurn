@@ -12,10 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.example.gabm.screenrotationcontrol.services.ServiceRotationControlService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener {
+    private Switch serviceStateSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +27,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         checkDrawOverlayPermission();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this) || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            startService(new Intent(this, ServiceRotationControlService.class));
-        }
+        serviceStateSwitch = (Switch)findViewById(R.id.service_state_switch);
+        serviceStateSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -85,9 +78,29 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.canDrawOverlays(this)) {
-                    startService(new Intent(this, ServiceRotationControlService.class));
+                    startService();
                 }
             }
         }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (b) {
+            startService();
+        } else {
+            stopService();
+        }
+    }
+
+    private void startService() {
+        startService(new Intent(this, ServiceRotationControlService.class));
+        serviceStateSwitch.setChecked(true);
+    }
+
+    private void stopService() {
+        stopService(new Intent(this, ServiceRotationControlService.class));
+        serviceStateSwitch.setChecked(false);
+
     }
 }
