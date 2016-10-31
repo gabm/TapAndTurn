@@ -9,11 +9,11 @@ import android.widget.LinearLayout;
  * Created by gabm on 31.10.16.
  */
 
-public class DummyOverlay {
+public class ScreenRotatorOverlay {
     private LinearLayout dummyLayout;
     private WindowManager curWindowManager;
 
-    public DummyOverlay(Context context, WindowManager windowManager, int orientation) {
+    public ScreenRotatorOverlay(Context context, WindowManager windowManager, int orientation) {
         dummyLayout = new LinearLayout(context);
         curWindowManager = windowManager;
     }
