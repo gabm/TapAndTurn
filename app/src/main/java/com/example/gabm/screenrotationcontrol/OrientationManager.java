@@ -1,6 +1,7 @@
 package com.example.gabm.screenrotationcontrol;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.view.OrientationEventListener;
 
 /**
@@ -8,16 +9,12 @@ import android.view.OrientationEventListener;
  */
 
 // borrowed from: http://stackoverflow.com/questions/9021890/get-phone-orientation-but-fix-screen-orientation-to-portrait
-public class OrientationManager extends OrientationEventListener {
+class OrientationManager extends OrientationEventListener {
 
-    public enum ScreenOrientation {
-        REVERSED_LANDSCAPE, LANDSCAPE, PORTRAIT, REVERSED_PORTRAIT
-    }
-
-    public ScreenOrientation screenOrientation;
+    private int curScreenOrientation;
     private OrientationListener listener;
 
-    public OrientationManager(Context context, int rate, OrientationListener listener) {
+    OrientationManager(Context context, int rate, OrientationListener listener) {
         super(context, rate);
         setListener(listener);
     }
@@ -35,20 +32,20 @@ public class OrientationManager extends OrientationEventListener {
         if (orientation == -1){
             return;
         }
-        ScreenOrientation newOrientation;
+        int newOrientation;
         if (orientation >= 60 && orientation <= 140){
-            newOrientation = ScreenOrientation.REVERSED_LANDSCAPE;
+            newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
         } else if (orientation >= 140 && orientation <= 220) {
-            newOrientation = ScreenOrientation.REVERSED_PORTRAIT;
+            newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
         } else if (orientation >= 220 && orientation <= 300) {
-            newOrientation = ScreenOrientation.LANDSCAPE;
+            newOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else {
-            newOrientation = ScreenOrientation.PORTRAIT;
+            newOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         }
-        if(newOrientation != screenOrientation){
-            screenOrientation = newOrientation;
+        if(newOrientation != curScreenOrientation){
+            curScreenOrientation = newOrientation;
             if(listener != null){
-                listener.onOrientationChange(screenOrientation);
+                listener.onOrientationChange(curScreenOrientation);
             }
         }
     }
@@ -57,12 +54,11 @@ public class OrientationManager extends OrientationEventListener {
         this.listener = listener;
     }
 
-    public ScreenOrientation getScreenOrientation(){
-        return screenOrientation;
+    public int getCurScreenOrientation(){
+        return curScreenOrientation;
     }
 
     public interface OrientationListener {
-
-        public void onOrientationChange(ScreenOrientation screenOrientation);
+        void onOrientationChange(int screenOrientation);
     }
 }

@@ -11,10 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +30,9 @@ public class ServiceRotationControlService extends Service implements Orientatio
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION = R.string.local_service_started;
-    private OrientationManager.ScreenOrientation handlerScreenOrientation;
+    private int handlerScreenOrientation;
     @Override
-    public void onOrientationChange(OrientationManager.ScreenOrientation screenOrientation) {
+    public void onOrientationChange(int screenOrientation) {
         Log.i("Orientation", String.valueOf(screenOrientation));
 
 
@@ -43,7 +40,7 @@ public class ServiceRotationControlService extends Service implements Orientatio
             return;
 
         handlerScreenOrientation = screenOrientation;
-        params.screenOrientation = getScreenOrientation(screenOrientation);
+        params.screenOrientation = screenOrientation;
         windowManager.addView(buttonLayout, params);
 
         Handler timeoutHandler = new Handler();
@@ -94,7 +91,7 @@ public class ServiceRotationControlService extends Service implements Orientatio
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (handlerScreenOrientation == orientationManager.getScreenOrientation()) {
+                if (handlerScreenOrientation == orientationManager.getCurScreenOrientation()) {
                     setDummyLayoutOrientation(handlerScreenOrientation);
                 }
                 windowManager.removeView(buttonLayout);
@@ -103,40 +100,24 @@ public class ServiceRotationControlService extends Service implements Orientatio
 
         dummyLayout = new LinearLayout(getApplicationContext());
 
-        setDummyLayoutOrientation(OrientationManager.ScreenOrientation.LANDSCAPE);
+        setDummyLayoutOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
 
-        orientationManager = new OrientationManager(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
+        orientationManager = new OrientationManager(getApplicationContext(), SensorManager.SENSOR_DELAY_UI, this);
         orientationManager.enable();
     }
 
-    private void setDummyLayoutOrientation(OrientationManager.ScreenOrientation screenOrientation)
+    private void setDummyLayoutOrientation(int screenOrientation)
     {
         if (dummyLayout.getParent() != null)
             windowManager.removeView(dummyLayout);
 
         WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
-        dummyParams.screenOrientation = getScreenOrientation(screenOrientation);
+        dummyParams.screenOrientation = screenOrientation;
 
         windowManager.addView(dummyLayout, dummyParams);
-    }
-
-    private int getScreenOrientation(OrientationManager.ScreenOrientation screenOrientation)
-    {
-        switch (screenOrientation) {
-            case LANDSCAPE:
-                return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            case PORTRAIT:
-                return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-            case REVERSED_LANDSCAPE:
-                return ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-            case REVERSED_PORTRAIT:
-                return ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-            default:
-                return -1;
-        }
     }
 
     @Override
