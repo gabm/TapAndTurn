@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import static android.R.attr.permission;
+import com.example.gabm.screenrotationcontrol.services.ServiceRotationControlService;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol;
+package com.example.gabm.screenrotationcontrol.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,17 +20,23 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.gabm.screenrotationcontrol.MainActivity;
+import com.example.gabm.screenrotationcontrol.R;
+import com.example.gabm.screenrotationcontrol.sensors.PhysicalOrientationSensor;
+import com.example.gabm.screenrotationcontrol.ui.DummyOverlay;
+
 /**
  * Created by gabm on 30.10.16.
  */
 
-public class ServiceRotationControlService extends Service implements OrientationManager.OrientationListener{
+public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener{
     private NotificationManager mNM;
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION = R.string.local_service_started;
     private int handlerScreenOrientation;
+
     @Override
     public void onOrientationChange(int screenOrientation) {
         Log.i("Orientation", String.valueOf(screenOrientation));
@@ -64,19 +70,22 @@ public class ServiceRotationControlService extends Service implements Orientatio
         }
     }
 
-    private OrientationManager orientationManager;
+    private PhysicalOrientationSensor orientationManager;
     private LinearLayout buttonLayout;
     private WindowManager windowManager;
     private ImageButton imageButton;
     private WindowManager.LayoutParams params;
-    private LinearLayout dummyLayout;
 
+    private DummyOverlay dummyOverlay;
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
        // Initialize layout params
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+        dummyOverlay = new DummyOverlay(getApplicationContext(), windowManager, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT):
+
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -91,34 +100,21 @@ public class ServiceRotationControlService extends Service implements Orientatio
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (handlerScreenOrientation == orientationManager.getCurScreenOrientation()) {
-                    setDummyLayoutOrientation(handlerScreenOrientation);
-                }
+                if (handlerScreenOrientation == orientationManager.getCurScreenOrientation())
+                    dummyOverlay.changeOrientation(handlerScreenOrientation);
+
                 windowManager.removeView(buttonLayout);
             }
         });
 
-        dummyLayout = new LinearLayout(getApplicationContext());
-
-        setDummyLayoutOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
 
-        orientationManager = new OrientationManager(getApplicationContext(), SensorManager.SENSOR_DELAY_UI, this);
+        orientationManager = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_UI, this);
         orientationManager.enable();
     }
 
-    private void setDummyLayoutOrientation(int screenOrientation)
-    {
-        if (dummyLayout.getParent() != null)
-            windowManager.removeView(dummyLayout);
-
-        WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
-        dummyParams.screenOrientation = screenOrientation;
-
-        windowManager.addView(dummyLayout, dummyParams);
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

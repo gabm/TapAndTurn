@@ -1,4 +1,4 @@
-package com.example.gabm.screenrotationcontrol;
+package com.example.gabm.screenrotationcontrol.sensors;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -9,21 +9,21 @@ import android.view.OrientationEventListener;
  */
 
 // borrowed from: http://stackoverflow.com/questions/9021890/get-phone-orientation-but-fix-screen-orientation-to-portrait
-class OrientationManager extends OrientationEventListener {
+public class PhysicalOrientationSensor extends OrientationEventListener {
 
     private int curScreenOrientation;
     private OrientationListener listener;
 
-    OrientationManager(Context context, int rate, OrientationListener listener) {
+    public PhysicalOrientationSensor(Context context, int rate, OrientationListener listener) {
         super(context, rate);
         setListener(listener);
     }
 
-    public OrientationManager(Context context, int rate) {
+    public PhysicalOrientationSensor(Context context, int rate) {
         super(context, rate);
     }
 
-    public OrientationManager(Context context) {
+    public PhysicalOrientationSensor(Context context) {
         super(context);
     }
 
