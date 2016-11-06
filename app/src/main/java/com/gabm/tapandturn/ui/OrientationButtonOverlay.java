@@ -16,14 +16,19 @@ import com.gabm.tapandturn.R;
  * Created by gabm on 31.10.16.
  */
 
-public class OrientationButtonOverlay {
+public class OrientationButtonOverlay implements View.OnClickListener {
     private WindowManager curWindowManager;
     private LinearLayout buttonLayout;
     private ImageButton imageButton;
     private WindowManager.LayoutParams layoutParams;
     private Handler timeoutHandler;
 
-    class HideButtonRunnable implements Runnable {
+    @Override
+    public void onClick(View view) {
+        hide();
+    }
+
+    private class HideButtonRunnable implements Runnable {
         @Override
         public void run() {
             hide();
@@ -36,8 +41,6 @@ public class OrientationButtonOverlay {
         curWindowManager =windowManager;
 
         layoutParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
                 PixelFormat.TRANSLUCENT);
@@ -45,6 +48,8 @@ public class OrientationButtonOverlay {
         layoutParams.gravity = Gravity.CENTER;
 
         buttonLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
+        buttonLayout.setOnClickListener(this);
+
         imageButton = (ImageButton)buttonLayout.findViewById(R.id.imageButton);
         imageButton.setOnClickListener(listener);
 
@@ -65,8 +70,8 @@ public class OrientationButtonOverlay {
 
     public void hide() {
         if (buttonLayout.getParent() != null) {
-            curWindowManager.removeView(buttonLayout);
             timeoutHandler.removeCallbacks(hideButtonRunnable);
+            curWindowManager.removeView(buttonLayout);
         }
     }
 
