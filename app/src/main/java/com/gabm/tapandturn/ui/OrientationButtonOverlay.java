@@ -133,7 +133,7 @@ public class OrientationButtonOverlay {
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
                 //return Gravity.BOTTOM | Gravity.LEFT;
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
