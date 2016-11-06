@@ -57,15 +57,16 @@ public class OrientationButtonOverlay {
     }
 
     public void show(int oldOrientation, int newOrientation) {
-        if (buttonLayout.getParent() == null) {
-            layoutParams.screenOrientation = oldOrientation;
+        if (buttonLayout.getParent() != null)
+            hide();
 
-            setButtonAlignment(oldOrientation, newOrientation);
-            curWindowManager.addView(buttonLayout, layoutParams);
+        layoutParams.screenOrientation = oldOrientation;
 
-            timeoutHandler.removeCallbacks(hideButtonRunnable);
-            timeoutHandler.postDelayed(hideButtonRunnable, 4000);
-        }
+        setButtonAlignment(oldOrientation, newOrientation);
+        curWindowManager.addView(buttonLayout, layoutParams);
+
+        timeoutHandler.removeCallbacks(hideButtonRunnable);
+        timeoutHandler.postDelayed(hideButtonRunnable, 4000);
     }
 
     private void setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
