@@ -48,70 +48,11 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         int oldScreenOrientation = screenRotatorOverlay.getCurrentlySetScreenOrientation();
         if (newScreenOrientation != oldScreenOrientation) {
 
-            int gravity = getGravityForScreenOrintation(oldScreenOrientation, newScreenOrientation);
-            orientationButtonOverlay.show(oldScreenOrientation, gravity);
+            orientationButtonOverlay.show(oldScreenOrientation, newScreenOrientation);
             handlerScreenOrientation = newScreenOrientation;
         }
         else
             orientationButtonOverlay.hide();
-
-    }
-
-    private int getGravityForScreenOrintation( int oldScreenOrientation, int newScreenOrientation) {
-        Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
-        // coming from portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-                return Gravity.BOTTOM | Gravity.RIGHT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-                return Gravity.TOP | Gravity.LEFT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
-                return Gravity.BOTTOM | Gravity.LEFT;
-
-        }
-
-        // coming from landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                return Gravity.TOP | Gravity.LEFT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
-                return Gravity.BOTTOM | Gravity.RIGHT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-                return Gravity.BOTTOM | Gravity.LEFT;
-
-        }
-
-        // coming from reverse landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                return Gravity.BOTTOM | Gravity.RIGHT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
-                return Gravity.TOP | Gravity.LEFT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-                return Gravity.BOTTOM | Gravity.LEFT;
-
-        }
-
-        // coming from reverse portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
-                return Gravity.BOTTOM | Gravity.RIGHT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-                return Gravity.TOP | Gravity.LEFT;
-
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                return Gravity.BOTTOM | Gravity.LEFT;
-
-        }
-
-        return Gravity.CENTER;
 
     }
 
