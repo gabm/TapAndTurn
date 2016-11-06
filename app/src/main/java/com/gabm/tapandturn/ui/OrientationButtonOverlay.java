@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -16,17 +17,12 @@ import com.gabm.tapandturn.R;
  * Created by gabm on 31.10.16.
  */
 
-public class OrientationButtonOverlay implements View.OnClickListener {
+public class OrientationButtonOverlay {
     private WindowManager curWindowManager;
     private LinearLayout buttonLayout;
     private ImageButton imageButton;
     private WindowManager.LayoutParams layoutParams;
     private Handler timeoutHandler;
-
-    @Override
-    public void onClick(View view) {
-        hide();
-    }
 
     private class HideButtonRunnable implements Runnable {
         @Override
@@ -48,7 +44,13 @@ public class OrientationButtonOverlay implements View.OnClickListener {
         layoutParams.gravity = Gravity.CENTER;
 
         buttonLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
-        buttonLayout.setOnClickListener(this);
+        buttonLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                hide();
+                return false;
+            }
+        });
 
         imageButton = (ImageButton)buttonLayout.findViewById(R.id.imageButton);
         imageButton.setOnClickListener(listener);
