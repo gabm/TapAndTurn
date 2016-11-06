@@ -27,6 +27,7 @@ public class OrientationButtonOverlay {
     private ImageButton imageButton;
     private WindowManager.LayoutParams layoutParams;
     private Handler timeoutHandler;
+    private int iconSize;
 
     private class HideButtonRunnable implements Runnable {
         @Override
@@ -38,6 +39,7 @@ public class OrientationButtonOverlay {
     private HideButtonRunnable hideButtonRunnable;
 
     public OrientationButtonOverlay(Context context, WindowManager windowManager, View.OnClickListener listener) {
+        iconSize = (int)(context.getResources().getDisplayMetrics().density * 40 + 0.5);
         curWindowManager =windowManager;
 
         layoutParams = new WindowManager.LayoutParams(
@@ -71,7 +73,8 @@ public class OrientationButtonOverlay {
 
     private void setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
         Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
 
         // coming from portrait
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {

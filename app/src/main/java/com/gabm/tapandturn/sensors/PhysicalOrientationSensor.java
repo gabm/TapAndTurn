@@ -35,8 +35,8 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
         int newOrientation;
         if (orientation >= 60 && orientation <= 140){
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-        } else if (orientation >= 140 && orientation <= 220) {
-            newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+        //} else if (orientation >= 140 && orientation <= 220) {
+        //    newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
         } else if (orientation >= 220 && orientation <= 300) {
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else {
