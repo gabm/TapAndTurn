@@ -1,6 +1,7 @@
 package com.gabm.tapandturn.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Handler;
@@ -27,7 +28,8 @@ public class OrientationButtonOverlay {
     private ImageButton imageButton;
     private WindowManager.LayoutParams layoutParams;
     private Handler timeoutHandler;
-    private int iconSize;
+    private Context curContext;
+    private SharedPreferences curPreferences;
 
     private class HideButtonRunnable implements Runnable {
         @Override
@@ -38,9 +40,10 @@ public class OrientationButtonOverlay {
 
     private HideButtonRunnable hideButtonRunnable;
 
-    public OrientationButtonOverlay(Context context, WindowManager windowManager, View.OnClickListener listener) {
-        iconSize = (int)(context.getResources().getDisplayMetrics().density * 40 + 0.5);
+    public OrientationButtonOverlay(Context context, WindowManager windowManager, View.OnClickListener listener, SharedPreferences preferences) {
         curWindowManager =windowManager;
+        curContext = context;
+        curPreferences = preferences;
 
         layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.TYPE_PHONE,
@@ -74,7 +77,10 @@ public class OrientationButtonOverlay {
     private void setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
         Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(iconSize, iconSize);
+        int iconSizeDP = curPreferences.getInt("IconSize", 40);
+        final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(iconSizePx, iconSizePx);
 
         // coming from portrait
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {

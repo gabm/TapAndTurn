@@ -14,22 +14,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.services.ServiceRotationControlService;
 
-public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
+public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private Switch serviceStateSwitch;
     private Button requestPermissionButton;
     private String PREFS_KEY_SERVICESTATE = "ServiceState";
+    private String PREFS_KEY_ICONSIZE = "IconSize";
     private SharedPreferences prefs;
-
+    private SeekBar iconSizeSeekbar;
+    private TextView iconSizeTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        iconSizeSeekbar = (SeekBar)findViewById(R.id.icon_size_seekbar);
+        iconSizeTextView = (TextView)findViewById(R.id.icon_size_text);
         setSupportActionBar(toolbar);
 
         prefs = getSharedPreferences("ScreenRotationControl", MODE_PRIVATE);
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
+
+        iconSizeTextView.setText("Icon Size: " + iconSizeSeekbar.getProgress() + "dp");
+        iconSizeSeekbar.setOnSeekBarChangeListener(this);
     }
 
     @Override
@@ -142,5 +151,24 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     public void onClick(View view) {
         if (!hasPermissionToDrawOverApps())
             requestPermission();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        iconSizeTextView.setText("Icon Size: " + seekBar.getProgress() + "dp");
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(PREFS_KEY_ICONSIZE, seekBar.getProgress());
+        editor.apply();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }
