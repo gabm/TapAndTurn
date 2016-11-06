@@ -48,13 +48,6 @@ public class OrientationButtonOverlay {
         layoutParams.gravity = Gravity.CENTER;
 
         buttonLayout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
-        buttonLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                hide();
-                return false;
-            }
-        });
 
         imageButton = (ImageButton)buttonLayout.findViewById(R.id.imageButton);
         imageButton.setOnClickListener(listener);
