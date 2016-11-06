@@ -52,9 +52,10 @@ public class OrientationButtonOverlay {
         timeoutHandler = new Handler();
     }
 
-    public void show(int orientation) {
+    public void show(int current_orientation, int gravity) {
         if (buttonLayout.getParent() == null) {
-            layoutParams.screenOrientation = orientation;
+            layoutParams.screenOrientation = current_orientation;
+            layoutParams.gravity = gravity;
             curWindowManager.addView(buttonLayout, layoutParams);
 
             timeoutHandler.removeCallbacks(hideButtonRunnable);

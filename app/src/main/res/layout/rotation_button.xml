@@ -5,8 +5,8 @@
     android:layout_height="wrap_content">
 
     <ImageButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
         android:src="@android:drawable/ic_menu_rotate"
         android:id="@+id/imageButton"
         android:background="@android:drawable/screen_background_dark_transparent"

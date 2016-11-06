@@ -10,13 +10,13 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.MainActivity;
 import com.gabm.tapandturn.R;
-import com.gabm.tapandturn.sensors.AndroidOrientationSettings;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
 import com.gabm.tapandturn.ui.OrientationButtonOverlay;
@@ -31,7 +31,6 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
 
     private PhysicalOrientationSensor physicalOrientationSensor;
-    private AndroidOrientationSettings androidOrientationSettings;
 
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
@@ -43,24 +42,87 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     private int handlerScreenOrientation;
 
     @Override
-    public void onOrientationChange(int screenOrientation) {
-        Log.i("Orientation", String.valueOf(screenOrientation));
+    public void onOrientationChange(int newScreenOrientation) {
+        Log.i("Orientation", String.valueOf(newScreenOrientation));
 
-        if (screenOrientation != androidOrientationSettings.getCurrentOrientation()) {
-            orientationButtonOverlay.show(androidOrientationSettings.getCurrentOrientation());
+        int oldScreenOrientation = screenRotatorOverlay.getCurrentlySetScreenOrientation();
+        if (newScreenOrientation != oldScreenOrientation) {
 
-            handlerScreenOrientation = screenOrientation;
+            int gravity = getGravityForScreenOrintation(oldScreenOrientation, newScreenOrientation);
+            orientationButtonOverlay.show(oldScreenOrientation, gravity);
+            handlerScreenOrientation = newScreenOrientation;
         }
         else
             orientationButtonOverlay.hide();
 
     }
 
+    private int getGravityForScreenOrintation( int oldScreenOrientation, int newScreenOrientation) {
+        Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
+        // coming from portrait
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                return Gravity.BOTTOM | Gravity.RIGHT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
+                return Gravity.TOP | Gravity.LEFT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
+                return Gravity.BOTTOM | Gravity.LEFT;
+
+        }
+
+        // coming from landscape
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                return Gravity.TOP | Gravity.LEFT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
+                return Gravity.BOTTOM | Gravity.RIGHT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
+                return Gravity.BOTTOM | Gravity.LEFT;
+
+        }
+
+        // coming from reverse landscape
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                return Gravity.BOTTOM | Gravity.RIGHT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
+                return Gravity.TOP | Gravity.LEFT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
+                return Gravity.BOTTOM | Gravity.LEFT;
+
+        }
+
+        // coming from reverse portrait
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)
+                return Gravity.BOTTOM | Gravity.RIGHT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                return Gravity.TOP | Gravity.LEFT;
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                return Gravity.BOTTOM | Gravity.LEFT;
+
+        }
+
+        return Gravity.CENTER;
+
+    }
+
     @Override
     public void onClick(View view) {
         orientationButtonOverlay.hide();
-        if (handlerScreenOrientation == physicalOrientationSensor.getCurScreenOrientation())
+        if (handlerScreenOrientation == physicalOrientationSensor.getCurScreenOrientation()) {
             screenRotatorOverlay.changeOrientation(handlerScreenOrientation);
+
+        }
+
     }
 
 
@@ -78,7 +140,6 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         showNotification();
 
         physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
-        androidOrientationSettings = new AndroidOrientationSettings(getApplicationContext());
         physicalOrientationSensor.enable();
     }
 
