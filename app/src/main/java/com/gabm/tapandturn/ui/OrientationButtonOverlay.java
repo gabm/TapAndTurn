@@ -71,7 +71,7 @@ public class OrientationButtonOverlay {
         curWindowManager.addView(buttonLayout, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);
-        timeoutHandler.postDelayed(hideButtonRunnable, 4000);
+        timeoutHandler.postDelayed(hideButtonRunnable, curPreferences.getInt("IconTimeout", 4000));
     }
 
     private void setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {

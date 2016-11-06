@@ -21,14 +21,23 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.services.ServiceRotationControlService;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private Switch serviceStateSwitch;
     private Button requestPermissionButton;
     private String PREFS_KEY_SERVICESTATE = "ServiceState";
     private String PREFS_KEY_ICONSIZE = "IconSize";
+    private String PREFS_KEY_ICONTIMEOUT = "IconTimeout";
     private SharedPreferences prefs;
+
     private SeekBar iconSizeSeekbar;
     private TextView iconSizeTextView;
+
+    private SeekBar iconTimeoutSeekbar;
+    private TextView iconTimeoutTextView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         iconSizeSeekbar = (SeekBar)findViewById(R.id.icon_size_seekbar);
         iconSizeTextView = (TextView)findViewById(R.id.icon_size_text);
+
+        iconTimeoutSeekbar = (SeekBar)findViewById(R.id.icon_timeout_seekbar);
+        iconTimeoutTextView = (TextView)findViewById(R.id.icon_timeout_text);
+
         setSupportActionBar(toolbar);
 
         prefs = getSharedPreferences("ScreenRotationControl", MODE_PRIVATE);
@@ -46,8 +59,11 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
 
-        iconSizeTextView.setText("Icon Size: " + iconSizeSeekbar.getProgress() + "dp");
         iconSizeSeekbar.setOnSeekBarChangeListener(this);
+        onProgressChanged(iconSizeSeekbar, 0, false);
+
+        iconTimeoutSeekbar.setOnSeekBarChangeListener(this);
+        onProgressChanged(iconTimeoutSeekbar, 0, false);
     }
 
     @Override
@@ -155,11 +171,19 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        iconSizeTextView.setText("Icon Size: " + seekBar.getProgress() + "dp");
+        if (seekBar == iconSizeSeekbar) {
+            iconSizeTextView.setText("Icon Size: " + seekBar.getProgress() + "dp");
 
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(PREFS_KEY_ICONSIZE, seekBar.getProgress());
-        editor.apply();
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(PREFS_KEY_ICONSIZE, seekBar.getProgress());
+            editor.apply();
+        } else if  (seekBar == iconTimeoutSeekbar) {
+            iconTimeoutTextView.setText("Icon Timeout: " + seekBar.getProgress() + "ms");
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(PREFS_KEY_ICONTIMEOUT, seekBar.getProgress());
+            editor.apply();
+        }
     }
 
     @Override
