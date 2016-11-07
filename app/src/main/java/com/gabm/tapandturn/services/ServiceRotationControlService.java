@@ -121,7 +121,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_menu_rotate)  // the status icon
+                .setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
                 .setContentTitle(getText(R.string.orientation_service_label))  // the label of the entry
