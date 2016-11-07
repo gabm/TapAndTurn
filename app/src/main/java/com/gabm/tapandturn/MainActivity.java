@@ -60,10 +60,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         requestPermissionButton.setOnClickListener(this);
 
         iconSizeSeekbar.setOnSeekBarChangeListener(this);
-        onProgressChanged(iconSizeSeekbar, 0, false);
-
         iconTimeoutSeekbar.setOnSeekBarChangeListener(this);
-        onProgressChanged(iconTimeoutSeekbar, 0, false);
     }
 
     @Override
@@ -131,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         super.onStart();
         setServiceState(prefs.getBoolean(PREFS_KEY_SERVICESTATE, false));
         setPermissionGranted(hasPermissionToDrawOverApps());
+
+        iconSizeSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONSIZE, 40));
+        iconTimeoutSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONTIMEOUT, 4000));
     }
 
     @Override

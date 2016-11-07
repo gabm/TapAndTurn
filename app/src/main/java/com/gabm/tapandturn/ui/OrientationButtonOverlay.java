@@ -24,9 +24,7 @@ import com.gabm.tapandturn.R;
 
 public class OrientationButtonOverlay {
     private WindowManager curWindowManager;
-    private RelativeLayout buttonLayout;
     private ImageButton imageButton;
-    private WindowManager.LayoutParams layoutParams;
     private Handler timeoutHandler;
     private Context curContext;
     private SharedPreferences curPreferences;
@@ -45,16 +43,7 @@ public class OrientationButtonOverlay {
         curContext = context;
         curPreferences = preferences;
 
-        layoutParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-                PixelFormat.TRANSLUCENT);
-
-        layoutParams.gravity = Gravity.CENTER;
-
-        buttonLayout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
-
-        imageButton = (ImageButton)buttonLayout.findViewById(R.id.imageButton);
+        imageButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
         imageButton.setOnClickListener(listener);
 
         hideButtonRunnable = new HideButtonRunnable();
@@ -62,44 +51,43 @@ public class OrientationButtonOverlay {
     }
 
     public void show(int oldOrientation, int newOrientation) {
-        if (buttonLayout.getParent() != null)
+        if (imageButton.getParent() != null)
             hide();
 
-        layoutParams.screenOrientation = oldOrientation;
+        int iconSizeDP = curPreferences.getInt("IconSize", 40);
+        final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
 
-        setButtonAlignment(oldOrientation, newOrientation);
-        curWindowManager.addView(buttonLayout, layoutParams);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
+                iconSizePx, iconSizePx,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
+                PixelFormat.TRANSLUCENT);
+
+        layoutParams.screenOrientation = oldOrientation;
+        layoutParams.gravity = setButtonAlignment(oldOrientation, newOrientation);
+        curWindowManager.addView(imageButton, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);
         timeoutHandler.postDelayed(hideButtonRunnable, curPreferences.getInt("IconTimeout", 4000));
     }
 
-    private void setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
+    private int setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
         Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
-        int iconSizeDP = curPreferences.getInt("IconSize", 40);
-        final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(iconSizePx, iconSizePx);
 
         // coming from portrait
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                //return Gravity.BOTTOM | Gravity.RIGHT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-                //return Gravity.TOP | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.TOP | Gravity.LEFT;
             }
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
-                //return Gravity.BOTTOM | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
@@ -107,22 +95,16 @@ public class OrientationButtonOverlay {
         // coming from landscape
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-                //return Gravity.TOP | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.TOP | Gravity.LEFT;
             }
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                //return Gravity.BOTTOM | Gravity.RIGHT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
-                //return Gravity.BOTTOM | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
@@ -130,22 +112,16 @@ public class OrientationButtonOverlay {
         // coming from reverse landscape
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-                //return Gravity.BOTTOM | Gravity.RIGHT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
-                //return Gravity.TOP | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.TOP | Gravity.LEFT;
             }
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-                //return Gravity.BOTTOM | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
@@ -153,32 +129,26 @@ public class OrientationButtonOverlay {
         // coming from reverse portrait
         if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
-                //return Gravity.BOTTOM | Gravity.RIGHT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-                //return Gravity.TOP | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.TOP | Gravity.LEFT;
             }
 
             if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                //return Gravity.BOTTOM | Gravity.LEFT;
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                return Gravity.BOTTOM | Gravity.LEFT;
             }
         }
 
-        imageButton.setLayoutParams(layoutParams);
+        return Gravity.CENTER;
     }
 
     public void hide() {
-        if (buttonLayout.getParent() != null) {
+        if (imageButton.getParent() != null) {
             timeoutHandler.removeCallbacks(hideButtonRunnable);
-            curWindowManager.removeView(buttonLayout);
+            curWindowManager.removeView(imageButton);
         }
     }
 

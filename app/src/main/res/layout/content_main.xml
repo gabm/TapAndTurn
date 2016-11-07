@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/icon_size_seekbar"
         android:max="100"
-        android:progress="40" />
+        android:progress="0" />
 
     <TextView
         android:text="Icon Timeout"
@@ -49,6 +49,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/icon_timeout_seekbar"
         android:max="8000"
-        android:progress="4000" />
+        android:progress="0" />
 
 </LinearLayout>
