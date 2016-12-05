@@ -38,4 +38,10 @@ public class ScreenRotatorOverlay {
 
         currentlySetScreenOrientation = orientation;
     }
+
+    // Immidiately removes the current view
+    public void removeView() {
+        if (dummyLayout.getParent() != null)
+            curWindowManager.removeView(dummyLayout);
+    }
 }
