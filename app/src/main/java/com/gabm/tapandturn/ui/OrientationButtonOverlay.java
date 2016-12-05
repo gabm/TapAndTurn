@@ -52,7 +52,7 @@ public class OrientationButtonOverlay {
 
     public void show(int oldOrientation, int newOrientation) {
         if (imageButton.getParent() != null)
-            hide();
+            curWindowManager.removeView(imageButton);
 
         int iconSizeDP = curPreferences.getInt("IconSize", 40);
         final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
