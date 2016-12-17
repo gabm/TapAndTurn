@@ -7,8 +7,8 @@ android {
         applicationId "com.gabm.screenrotationcontrol"
         minSdkVersion 17
         targetSdkVersion 24
-        versionCode 4 
-        versionName "2.1.1"
+        versionCode 5
+        versionName "2.2.0-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
