@@ -1,22 +1,19 @@
 package com.gabm.tapandturn.ui;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.gabm.tapandturn.R;
+import com.gabm.tapandturn.TapAndTurnApplication;
+import com.gabm.tapandturn.settings.SettingsKeys;
 
 /**
  * Created by gabm on 31.10.16.
@@ -27,7 +24,6 @@ public class OrientationButtonOverlay {
     private ImageButton imageButton;
     private Handler timeoutHandler;
     private Context curContext;
-    private SharedPreferences curPreferences;
 
     private class HideButtonRunnable implements Runnable {
         @Override
@@ -38,10 +34,9 @@ public class OrientationButtonOverlay {
 
     private HideButtonRunnable hideButtonRunnable;
 
-    public OrientationButtonOverlay(Context context, WindowManager windowManager, View.OnClickListener listener, SharedPreferences preferences) {
+    public OrientationButtonOverlay(Context context, WindowManager windowManager, View.OnClickListener listener) {
         curWindowManager =windowManager;
         curContext = context;
-        curPreferences = preferences;
 
         imageButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
         imageButton.setOnClickListener(listener);
@@ -54,7 +49,7 @@ public class OrientationButtonOverlay {
         if (imageButton.getParent() != null)
             curWindowManager.removeView(imageButton);
 
-        int iconSizeDP = curPreferences.getInt("IconSize", 40);
+        int iconSizeDP = TapAndTurnApplication.settings.getInt(SettingsKeys.PREFS_KEY_ICONSIZE, 40);
         final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
 
 
@@ -69,7 +64,7 @@ public class OrientationButtonOverlay {
         curWindowManager.addView(imageButton, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);
-        timeoutHandler.postDelayed(hideButtonRunnable, curPreferences.getInt("IconTimeout", 4000));
+        timeoutHandler.postDelayed(hideButtonRunnable, TapAndTurnApplication.settings.getInt(SettingsKeys.PREFS_KEY_ICONTIMEOUT, 4000));
     }
 
     private int setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {

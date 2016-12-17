@@ -76,12 +76,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this, getSharedPreferences("ScreenRotationControl", MODE_PRIVATE));
+        orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
 
-        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this, getSharedPreferences("ScreenRotationControl", MODE_PRIVATE));
+        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
         physicalOrientationSensor.enable();
     }
 

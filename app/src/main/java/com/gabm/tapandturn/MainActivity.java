@@ -1,7 +1,6 @@
 package com.gabm.tapandturn;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,18 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.services.ServiceRotationControlService;
-
-import org.w3c.dom.Text;
+import com.gabm.tapandturn.settings.SettingsKeys;
+import com.gabm.tapandturn.settings.SettingsManager;
 
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private Switch serviceStateSwitch;
     private Switch useReversePortraitSwitch;
     private Button requestPermissionButton;
-    private String PREFS_KEY_SERVICESTATE = "ServiceState";
-    private String PREFS_KEY_ICONSIZE = "IconSize";
-    private String PREFS_KEY_ICONTIMEOUT = "IconTimeout";
-    private String PREFS_KEY_USE_REVERSE_PORTRAIT = "UseReversePortrait";
-    private SharedPreferences prefs;
 
     private SeekBar iconSizeSeekbar;
     private TextView iconSizeTextView;
@@ -43,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         iconSizeSeekbar = (SeekBar)findViewById(R.id.icon_size_seekbar);
@@ -52,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         iconTimeoutTextView = (TextView)findViewById(R.id.icon_timeout_text);
 
         setSupportActionBar(toolbar);
-
-        prefs = getSharedPreferences("ScreenRotationControl", MODE_PRIVATE);
 
         serviceStateSwitch = (Switch)findViewById(R.id.service_state_switch);
         serviceStateSwitch.setOnCheckedChangeListener(this);
@@ -122,22 +115,24 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     protected void onStop() {
         Log.i("Main", "stopped");
         super.onStop();
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(PREFS_KEY_SERVICESTATE, serviceStateSwitch.isChecked());
-        editor.putBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
-        editor.apply();
+
+        final SettingsManager appSettings = TapAndTurnApplication.settings;
+        appSettings.startEditMode();
+        appSettings.putBoolean(SettingsKeys.PREFS_KEY_SERVICESTATE, serviceStateSwitch.isChecked());
+        appSettings.putBoolean(SettingsKeys.PREFS_KEY_USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
+        appSettings.finishEditMode();
     }
 
     @Override
     protected void onStart() {
         Log.i("Main", "started");
         super.onStart();
-        setServiceState(prefs.getBoolean(PREFS_KEY_SERVICESTATE, false));
+        setServiceState(TapAndTurnApplication.settings.getBoolean(SettingsKeys.PREFS_KEY_SERVICESTATE, false));
         setPermissionGranted(hasPermissionToDrawOverApps());
 
-        iconSizeSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONSIZE, 40));
-        iconTimeoutSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONTIMEOUT, 4000));
-        useReversePortraitSwitch.setChecked(prefs.getBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, false));
+        iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.PREFS_KEY_ICONSIZE, 40));
+        iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.PREFS_KEY_ICONTIMEOUT, 4000));
+        useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.PREFS_KEY_USE_REVERSE_PORTRAIT, false));
     }
 
     @Override
@@ -145,12 +140,8 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         if (compoundButton == serviceStateSwitch)
             setServiceState(b);
 
-        if (compoundButton == useReversePortraitSwitch) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, b);
-            editor.apply();
-        }
-
+        if (compoundButton == useReversePortraitSwitch)
+            TapAndTurnApplication.settings.putBoolean(SettingsKeys.PREFS_KEY_USE_REVERSE_PORTRAIT, b);
     }
 
     private void setServiceState(boolean started) {
@@ -188,16 +179,10 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (seekBar == iconSizeSeekbar) {
             iconSizeTextView.setText("Icon Size: " + seekBar.getProgress() + "dp");
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(PREFS_KEY_ICONSIZE, seekBar.getProgress());
-            editor.apply();
+            TapAndTurnApplication.settings.putInt(SettingsKeys.PREFS_KEY_ICONSIZE, seekBar.getProgress());
         } else if  (seekBar == iconTimeoutSeekbar) {
             iconTimeoutTextView.setText("Icon Timeout: " + seekBar.getProgress() + "ms");
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(PREFS_KEY_ICONTIMEOUT, seekBar.getProgress());
-            editor.apply();
+            TapAndTurnApplication.settings.putInt(SettingsKeys.PREFS_KEY_ICONTIMEOUT, seekBar.getProgress());
         }
     }
 

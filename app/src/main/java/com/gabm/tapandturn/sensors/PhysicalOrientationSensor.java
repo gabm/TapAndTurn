@@ -1,9 +1,11 @@
 package com.gabm.tapandturn.sensors;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.view.OrientationEventListener;
+
+import com.gabm.tapandturn.TapAndTurnApplication;
+import com.gabm.tapandturn.settings.SettingsKeys;
 
 /**
  * Created by gabm on 30.10.16.
@@ -14,12 +16,10 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
 
     private int curScreenOrientation;
     private OrientationListener listener;
-    private SharedPreferences curPreferences;
 
-    public PhysicalOrientationSensor(Context context, int rate, OrientationListener listener, SharedPreferences preferences) {
+    public PhysicalOrientationSensor(Context context, int rate, OrientationListener listener) {
         super(context, rate);
         setListener(listener);
-        curPreferences = preferences;
     }
 
     public PhysicalOrientationSensor(Context context, int rate) {
@@ -36,7 +36,7 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
             return;
         }
 
-        final boolean useReversePortrait = curPreferences.getBoolean("UseReversePortrait", false);
+        final boolean useReversePortrait = TapAndTurnApplication.settings.getBoolean(SettingsKeys.PREFS_KEY_USE_REVERSE_PORTRAIT, false);
 
         int newOrientation;
         if (orientation >= 60 && orientation <= 140){
