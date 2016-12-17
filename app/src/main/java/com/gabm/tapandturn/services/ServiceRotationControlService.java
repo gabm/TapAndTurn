@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.SensorManager;
@@ -145,6 +146,14 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         ServiceRotationControlService getService() {
             return ServiceRotationControlService.this;
         }
+    }
+
+    public static void Start(Context context) {
+        context.startService(new Intent(context, ServiceRotationControlService.class));
+    }
+
+    public static void Stop(Context context) {
+        context.stopService(new Intent(context, ServiceRotationControlService.class));
     }
 
     // This is the object that receives interactions from clients.  See

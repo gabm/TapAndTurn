@@ -36,7 +36,7 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
             return;
         }
 
-        final boolean useReversePortrait = TapAndTurnApplication.settings.getBoolean(SettingsKeys.PREFS_KEY_USE_REVERSE_PORTRAIT, false);
+        final boolean useReversePortrait = TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false);
 
         int newOrientation;
         if (orientation >= 60 && orientation <= 140){
