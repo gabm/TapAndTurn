@@ -10,12 +10,11 @@ import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.gabm.tapandturn.MainActivity;
+import com.gabm.tapandturn.ui.MainActivity;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
