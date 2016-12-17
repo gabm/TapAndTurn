@@ -9,4 +9,5 @@
     <string name="permission_granted">Permission Granted</string>
     <string name="permission_missing">Permission is missing, cannot start service!</string>
     <string name="use_reverse_portrait_label">Use Reverse Portrait</string>
+    <string name="start_on_boot_label">Automatically start on boot</string>
 </resources>

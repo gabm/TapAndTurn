@@ -27,6 +27,7 @@ import com.gabm.tapandturn.settings.SettingsManager;
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private Switch serviceStateSwitch;
     private Switch useReversePortraitSwitch;
+    private Switch autoStartBootSwtich;
     private Button requestPermissionButton;
 
     private SeekBar iconSizeSeekbar;
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         useReversePortraitSwitch = (Switch)findViewById(R.id.use_reverse_portrait_switch);
         useReversePortraitSwitch.setOnCheckedChangeListener(this);
+
+        autoStartBootSwtich = (Switch)findViewById(R.id.start_on_boot_switch);
+        autoStartBootSwtich.setOnCheckedChangeListener(this);
 
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
@@ -122,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         appSettings.startEditMode();
         appSettings.putBoolean(SettingsKeys.SERVICESTATE, serviceStateSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
+        appSettings.putBoolean(SettingsKeys.START_ON_BOOT, autoStartBootSwtich.isChecked());
         appSettings.finishEditMode();
     }
 
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 40));
         iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 4000));
         useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false));
+        autoStartBootSwtich.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false));
     }
 
     @Override
@@ -144,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         if (compoundButton == useReversePortraitSwitch)
             TapAndTurnApplication.settings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, b);
+
+        if (compoundButton == autoStartBootSwtich)
+            TapAndTurnApplication.settings.putBoolean(SettingsKeys.START_ON_BOOT, b);
     }
 
     private void setServiceState(boolean started) {
