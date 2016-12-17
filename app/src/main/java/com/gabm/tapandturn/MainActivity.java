@@ -25,10 +25,12 @@ import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private Switch serviceStateSwitch;
+    private Switch useReversePortraitSwitch;
     private Button requestPermissionButton;
     private String PREFS_KEY_SERVICESTATE = "ServiceState";
     private String PREFS_KEY_ICONSIZE = "IconSize";
     private String PREFS_KEY_ICONTIMEOUT = "IconTimeout";
+    private String PREFS_KEY_USE_REVERSE_PORTRAIT = "UseReversePortrait";
     private SharedPreferences prefs;
 
     private SeekBar iconSizeSeekbar;
@@ -55,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         serviceStateSwitch = (Switch)findViewById(R.id.service_state_switch);
         serviceStateSwitch.setOnCheckedChangeListener(this);
+
+        useReversePortraitSwitch = (Switch)findViewById(R.id.use_reverse_portrait_switch);
+        useReversePortraitSwitch.setOnCheckedChangeListener(this);
 
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
@@ -119,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         super.onStop();
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(PREFS_KEY_SERVICESTATE, serviceStateSwitch.isChecked());
+        editor.putBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
         editor.apply();
     }
 
@@ -131,11 +137,20 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         iconSizeSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONSIZE, 40));
         iconTimeoutSeekbar.setProgress(prefs.getInt(PREFS_KEY_ICONTIMEOUT, 4000));
+        useReversePortraitSwitch.setChecked(prefs.getBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, false));
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        setServiceState(b);
+        if (compoundButton == serviceStateSwitch)
+            setServiceState(b);
+
+        if (compoundButton == useReversePortraitSwitch) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(PREFS_KEY_USE_REVERSE_PORTRAIT, b);
+            editor.apply();
+        }
+
     }
 
     private void setServiceState(boolean started) {

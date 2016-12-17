@@ -50,5 +50,10 @@
         android:id="@+id/icon_timeout_seekbar"
         android:max="8000"
         android:progress="0" />
+    <Switch
+        android:id="@+id/use_reverse_portrait_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/use_reverse_portrait_label"/>
 
 </LinearLayout>
