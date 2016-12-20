@@ -28,8 +28,7 @@ public class ScreenRotatorOverlay {
     }
 
     public void changeOrientation(int orientation) {
-        if (dummyLayout.getParent() != null)
-            curWindowManager.removeView(dummyLayout);
+        removeView();
 
         WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
         dummyParams.screenOrientation = orientation;

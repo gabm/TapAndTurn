@@ -53,14 +53,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         }
         else {
             orientationButtonOverlay.hide();
-            screenRotatorOverlay.removeView();
         }
     }
 
     @Override
     public void onClick(View view) {
         orientationButtonOverlay.hide();
-        screenRotatorOverlay.removeView();
         if (handlerScreenOrientation == physicalOrientationSensor.getCurScreenOrientation()) {
             screenRotatorOverlay.changeOrientation(handlerScreenOrientation);
         }
