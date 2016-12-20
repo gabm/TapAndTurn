@@ -7,8 +7,8 @@ android {
         applicationId "com.gabm.screenrotationcontrol"
         minSdkVersion 17
         targetSdkVersion 24
-        versionCode 5
-        versionName "2.2.0-beta"
+        versionCode 6
+        versionName "2.2.0-beta2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -16,6 +16,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
     }
 }
 
