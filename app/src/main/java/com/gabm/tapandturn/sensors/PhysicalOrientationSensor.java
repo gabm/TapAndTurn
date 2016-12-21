@@ -36,19 +36,26 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
             return;
         }
 
-        final boolean useReversePortrait = TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false);
-
         int newOrientation;
         if (orientation >= 60 && orientation <= 140){
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-        } else if (useReversePortrait && orientation >= 140 && orientation <= 220) {
+        } else if (orientation >= 140 && orientation <= 220) {
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
         } else if (orientation >= 220 && orientation <= 300) {
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         } else {
             newOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         }
-        if(newOrientation != curScreenOrientation){
+
+        if(newOrientation != curScreenOrientation) {
+
+            // if the device is in reverse portrait mode
+            if (newOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
+                // and reverse portrait mode got disabled
+                if (!TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false))
+                    // then ignore
+                    return;
+
             curScreenOrientation = newOrientation;
             if(listener != null){
                 listener.onOrientationChange(curScreenOrientation);
