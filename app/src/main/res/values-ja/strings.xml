@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tap \'n\' Turn</string>
+    <string name="action_settings">設定</string>
+    <string name="orientation_service_started">実行しています</string>
+    <string name="orientation_service_stopped">Tap \'n\' Turn サービスは停止しました</string>
+    <string name="orientation_service_label">Tap \'n\' Turn サービス</string>
+    <string name="service_running">Tap \'n\' Turn サービスは実行しています</string>
+    <string name="request_permission">アクセス許可の要求</string>
+    <string name="permission_granted">アクセス許可を付与しました</string>
+    <string name="permission_missing">アクセス許可がありません。サービスを開始できません!</string>
+    <string name="use_reverse_portrait_label">逆ポートレートを使用する</string>
+    <string name="start_on_boot_label">起動時に自動的に開始する</string>
+</resources>
