@@ -19,27 +19,27 @@
         android:layout_height="wrap_content"
         android:text="@string/introduction_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/introduction"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <Switch
         android:id="@+id/service_state_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/service_running"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <Button
         android:id="@+id/request_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/request_permission"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
         android:id="@+id/icon_size_text"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
 
     <SeekBar
@@ -57,7 +57,7 @@
         android:id="@+id/icon_size_seekbar"
         android:max="100"
         android:progress="20"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
         android:id="@+id/icon_timeout_text"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
 
     <SeekBar
@@ -75,27 +75,27 @@
         android:id="@+id/icon_timeout_seekbar"
         android:max="8000"
         android:progress="500"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <Switch
         android:id="@+id/use_reverse_portrait_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/use_reverse_portrait_label"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <Switch
         android:id="@+id/left_handed_mode_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/left_handed_mode"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
     <Switch
         android:id="@+id/start_on_boot_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_on_boot_label"
-        android:style="@style/LinearLayoutChild"
+        style="@style/LinearLayoutChild"
         />
 </LinearLayout>
