@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     private Switch serviceStateSwitch;
     private Switch useReversePortraitSwitch;
     private Switch autoStartBootSwtich;
+    private Switch leftHandedModeSwitch;
     private Button requestPermissionButton;
 
     private SeekBar iconSizeSeekbar;
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         autoStartBootSwtich = (Switch)findViewById(R.id.start_on_boot_switch);
         autoStartBootSwtich.setOnCheckedChangeListener(this);
+
+        leftHandedModeSwitch = (Switch)findViewById(R.id.left_handed_mode_switch);
+        leftHandedModeSwitch.setOnCheckedChangeListener(this);
 
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
@@ -127,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         appSettings.putBoolean(SettingsKeys.SERVICESTATE, serviceStateSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.START_ON_BOOT, autoStartBootSwtich.isChecked());
+        appSettings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, leftHandedModeSwitch.isChecked());
         appSettings.finishEditMode();
     }
 
@@ -141,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 4000));
         useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false));
         autoStartBootSwtich.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false));
+        leftHandedModeSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
     }
 
     @Override
@@ -153,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         if (compoundButton == autoStartBootSwtich)
             TapAndTurnApplication.settings.putBoolean(SettingsKeys.START_ON_BOOT, b);
+
+        if (compoundButton == leftHandedModeSwitch)
+            TapAndTurnApplication.settings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, b);
     }
 
     private void setServiceState(boolean started) {

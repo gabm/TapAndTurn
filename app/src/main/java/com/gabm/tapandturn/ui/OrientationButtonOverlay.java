@@ -60,15 +60,95 @@ public class OrientationButtonOverlay {
                 PixelFormat.TRANSLUCENT);
 
         layoutParams.screenOrientation = oldOrientation;
-        layoutParams.gravity = setButtonAlignment(oldOrientation, newOrientation);
+        layoutParams.gravity = getButtonAlignment(oldOrientation, newOrientation, TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
         curWindowManager.addView(imageButton, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);
         timeoutHandler.postDelayed(hideButtonRunnable, TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 4000));
     }
 
-    private int setButtonAlignment(int oldScreenOrientation, int newScreenOrientation) {
-        Log.i("OrientationChange:", "old: " + oldScreenOrientation + " new: " + newScreenOrientation);
+    private int getButtonAlignment(int oldScreenOrientation, int newScreenOrientation, boolean leftHanded) {
+        if (leftHanded)
+            return getButtonAlignmentLeftHanded(oldScreenOrientation, newScreenOrientation);
+        else
+            return getButtonAlignmentRightHanded(oldScreenOrientation, newScreenOrientation);
+    }
+
+    private int getButtonAlignmentLeftHanded(int oldScreenOrientation, int newScreenOrientation) {
+        Log.i("OrientationChange:", "right handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
+
+
+        // coming from portrait
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                return Gravity.TOP | Gravity.RIGHT;
+            }
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                return Gravity.BOTTOM | Gravity.LEFT;
+            }
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+                return Gravity.BOTTOM | Gravity.RIGHT;
+            }
+
+        }
+
+        // coming from landscape
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+                return Gravity.BOTTOM | Gravity.LEFT;
+            }
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                return Gravity.TOP | Gravity.RIGHT;
+            }
+
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+                return Gravity.BOTTOM | Gravity.RIGHT;
+            }
+
+        }
+
+        // coming from reverse landscape
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+                return Gravity.TOP | Gravity.RIGHT;
+            }
+
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+                return Gravity.BOTTOM | Gravity.LEFT;
+            }
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+                return Gravity.BOTTOM | Gravity.RIGHT;
+            }
+
+        }
+
+        // coming from reverse portrait
+        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+                return Gravity.TOP | Gravity.RIGHT;
+            }
+
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+                return Gravity.BOTTOM | Gravity.LEFT;
+            }
+
+            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                return Gravity.BOTTOM | Gravity.RIGHT;
+            }
+        }
+
+        return Gravity.CENTER;
+    }
+
+    private int getButtonAlignmentRightHanded(int oldScreenOrientation, int newScreenOrientation) {
+        Log.i("OrientationChange:", "left handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
 
         // coming from portrait

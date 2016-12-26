@@ -10,5 +10,6 @@ public enum SettingsKeys {
     ICONSIZE,
     ICONTIMEOUT,
     USE_REVERSE_PORTRAIT,
-    START_ON_BOOT
+    START_ON_BOOT,
+    LEFT_HANDED_MODE
 }
