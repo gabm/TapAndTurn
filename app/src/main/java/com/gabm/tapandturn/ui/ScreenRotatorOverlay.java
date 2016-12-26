@@ -16,14 +16,12 @@ public class ScreenRotatorOverlay {
     private LinearLayout dummyLayout;
     private WindowManager curWindowManager;
     private int currentlySetScreenOrientation ;
-    private Context curContext;
     private int defaultOrientation;
 
 
     public ScreenRotatorOverlay(Context context, WindowManager windowManager, int orientation, int defaultOrientation) {
         dummyLayout = new LinearLayout(context);
         curWindowManager = windowManager;
-        curContext = context;
         this.defaultOrientation = defaultOrientation;
 
         changeOrientation(orientation);
