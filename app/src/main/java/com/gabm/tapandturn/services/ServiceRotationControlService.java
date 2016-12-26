@@ -27,11 +27,9 @@ import com.gabm.tapandturn.ui.OrientationButtonOverlay;
 
 public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener{
     private NotificationManager mNM;
-
-
+    private Notification.Builder curNotificationBuilder = null;
 
     private PhysicalOrientationSensor physicalOrientationSensor;
-
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
     private boolean initialized = false;
@@ -67,6 +65,13 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         orientationButtonOverlay.hide();
         if (handlerScreenOrientation == physicalOrientationSensor.getCurScreenOrientation()) {
             screenRotatorOverlay.changeOrientation(handlerScreenOrientation);
+
+            if (screenRotatorOverlay.isDefaultOrientation(handlerScreenOrientation))
+                curNotificationBuilder.setContentText(getText(R.string.orientation_service_started) + ": "  + getText(R.string.no_screen_overlay));
+            else
+                curNotificationBuilder.setContentText(getText(R.string.orientation_service_started) + ": "  + getText(R.string.screen_overlay));
+
+            mNM.notify(NOTIFICATION, curNotificationBuilder.build());
         }
 
     }
@@ -131,9 +136,8 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
-        // Set the info for the views that show in the notification panel.
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
+        curNotificationBuilder = new Notification.Builder(this);
+        curNotificationBuilder.setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
                 .setContentTitle(getText(R.string.orientation_service_label))  // the label of the entry
@@ -141,11 +145,10 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
                 .setPriority(Notification.PRIORITY_MIN)
                 .setShowWhen(false)
-                .setOngoing(true)
-                .build();
+                .setOngoing(true);
 
         // Send the notification.
-        mNM.notify(NOTIFICATION, notification);
+        mNM.notify(NOTIFICATION, curNotificationBuilder.build());
     }
 
 

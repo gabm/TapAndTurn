@@ -31,12 +31,15 @@ public class ScreenRotatorOverlay {
         return currentlySetScreenOrientation;
     }
 
+    public boolean isDefaultOrientation(int orientation) {
+        return orientation == defaultOrientation;
+    }
     public void changeOrientation(int orientation) {
         removeView();
 
         // if requested orientation is different from the device configured orientation
         // then enforece the new rotation by adding an overlay
-        if (orientation != defaultOrientation) {
+        if (!isDefaultOrientation(orientation)) {
 
             Log.i("Overlay", "Adding for " + orientation);
             Log.i("Overlay", "Configured orientation " + defaultOrientation);
