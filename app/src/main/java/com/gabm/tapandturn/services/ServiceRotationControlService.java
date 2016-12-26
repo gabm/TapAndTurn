@@ -34,6 +34,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
+    private boolean initialized = false;
 
 
     // Unique Identification Number for the Notification.
@@ -44,6 +45,11 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     @Override
     public void onOrientationChange(int newScreenOrientation) {
         Log.i("Orientation", String.valueOf(newScreenOrientation));
+
+        if (!initialized) {
+            initialize(newScreenOrientation);
+            return;
+        }
 
         int oldScreenOrientation = screenRotatorOverlay.getCurrentlySetScreenOrientation();
         if (newScreenOrientation != oldScreenOrientation) {
@@ -64,20 +70,23 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         }
 
     }
+    private void initialize(int defaultOrientation) {
 
-
-    @Override
-    public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-       // Initialize layout params
+        // Initialize layout params
         WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, defaultOrientation);
         orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
+
+        initialized = true;
+    }
+
+    @Override
+    public void onCreate() {
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
         physicalOrientationSensor.enable();
