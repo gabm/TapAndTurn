@@ -13,5 +13,6 @@
     <string name="left_handed_mode">Left Handed Mode</string>
     <string name="no_screen_overlay">No Screen overlay</string>
     <string name="screen_overlay">Screen overlay added, restricted buttons inaccessible</string>
-
+    <string name="introduction">Before enabling the service, please lock the rotation through the Android Settings. Hold you device upright, so that all the content is displayed correctly. Then enable service through the Switch. Your phone will remember this default position. When you want to click restricted Buttons (like install Buttons while installing APK's), it will only work in this default orientation.</string>
+    <string name="introduction_title">Introduction</string>
 </resources>
