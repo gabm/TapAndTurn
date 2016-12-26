@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tap \'n\' Turn</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="orientation_service_started">Uruchomiona</string>
+    <string name="orientation_service_stopped">Usługa Tap \'n\' Turn przestała działać</string>
+    <string name="orientation_service_label">Usługa Tap \'n\' Turn</string>
+    <string name="service_running">Usługa Tap \'n\' Turn jest uruchomiona</string>
+    <string name="request_permission">Wymaga zezwolenia</string>
+    <string name="permission_granted">Udzielono zezwolenia</string>
+    <string name="permission_missing">Brak zezwolenia, nie można wystartować usługi</string>
+    <string name="use_reverse_portrait_label">Korzystanie z odwrotnego portretu</string>
+    <string name="start_on_boot_label">Automatycznie uruchom podczas startu systemu</string>
+</resources>
