@@ -14,6 +14,6 @@
     <string name="left_handed_mode">Left Handed Mode</string>
     <string name="no_screen_overlay">You may access restricted buttons!</string>
     <string name="screen_overlay">Restricted buttons are inaccessible!</string>
-    <string name="introduction">Before enabling the service, please lock the rotation through the Android Settings. Hold you device upright, so that all the content is displayed correctly. Then enable service through the Switch. Your phone will remember this default position. When you want to click restricted Buttons (like install Buttons while installing APK\'s), it will only work in this default orientation.</string>
+    <string name="introduction">Tap \'n\' Turn should be run with auto-rotation enabled. It will enforce the user selected orientation by drawing an invisible overlay over the screen. That is why it needs that permission. However: this overlay is keeping you from using restricted buttons, such as the "Install" button when installing apps. This is a sensible standard behavior of Android and cannot be altered. However, you can disable the screen overlay temporarily by touching the notification.</string>
     <string name="introduction_title">Introduction</string>
 </resources>
