@@ -36,7 +36,6 @@ public class SettingsManager {
     }
 
     public boolean getBoolean(SettingsKeys key, boolean defaultValue) {
-        Log.i("getBoolean", key.name());
         return preferences.getBoolean(key.name(), defaultValue);
     }
 

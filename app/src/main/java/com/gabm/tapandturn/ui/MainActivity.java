@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         setServiceState(TapAndTurnApplication.settings.getBoolean(SettingsKeys.SERVICESTATE, false));
         setPermissionGranted(hasPermissionToDrawOverApps());
 
-        iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 40));
-        iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 4000));
+        iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 62));
+        iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 2000));
         useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false));
         autoStartBootSwtich.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false));
         leftHandedModeSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
