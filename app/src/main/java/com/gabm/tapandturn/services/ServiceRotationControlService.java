@@ -55,6 +55,41 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         }
     }
 
+    private BroadcastReceiver toggleActiveBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            toggleActive();
+        }
+    };
+
+    private BroadcastReceiver screenOffBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (isActive) physicalOrientationSensor.disable();
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                if (isActive) physicalOrientationSensor.enable();
+            }
+        }
+    };
+
+    private void createBroadcastReceivers() {
+
+        IntentFilter filter = new IntentFilter(TOGGLE_ACTIVE_BROADCAST);
+        registerReceiver(toggleActiveBroadcastReceiver, filter);
+
+        filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+
+        registerReceiver(screenOffBroadcastReceiver, filter);
+    }
+
+    private void destroyBroadcastReceivers() {
+        unregisterReceiver(toggleActiveBroadcastReceiver);
+        unregisterReceiver(screenOffBroadcastReceiver);
+    }
+
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -68,12 +103,10 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager);
         orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this);
 
-
-        IntentFilter filter = new IntentFilter(TOGGLE_ACTIVE_BROADCAST);
-        registerReceiver(broadcastReceiver, filter);
-
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
+
+        createBroadcastReceivers();
 
         activate();
     }
@@ -127,13 +160,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     public void onDestroy() {
         Log.i("LocalService", "Service stopped");
 
-        screenRotatorOverlay.removeView();
-        orientationButtonOverlay.hide();
-
-        physicalOrientationSensor.disable();
+        deactivate();
 
         // Cancel the persistent notification.
         mNM.cancel(NOTIFICATION);
+
+        destroyBroadcastReceivers();
 
         // Tell the user we stopped.
         Toast.makeText(this, R.string.toast_service_stopped, Toast.LENGTH_SHORT).show();
@@ -144,12 +176,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         return mBinder;
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            toggleActive();
-        }
-    };
+
     /**
      * Show a notification while this service is running.
      */
