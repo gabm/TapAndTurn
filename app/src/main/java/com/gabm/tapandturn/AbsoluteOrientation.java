@@ -13,7 +13,8 @@ public class AbsoluteOrientation {
         Portrait,
         Reverse_Portrait,
         Landscape,
-        Reverse_Landscape
+        Reverse_Landscape,
+        Unknown
     }
 
     public AbsoluteOrientation(Enum valEnum) {
@@ -35,6 +36,8 @@ public class AbsoluteOrientation {
     public boolean isReverseLandscape() {
         return this.equals(Enum.Reverse_Landscape);
     }
+
+    public boolean isUnknown() { return this.equals(Enum.Unknown); }
 
     public boolean equals(AbsoluteOrientation.Enum otherEnum) {
         return _enum == otherEnum;
@@ -65,7 +68,10 @@ public class AbsoluteOrientation {
         if (_enum == Enum.Landscape)
             return "Landscape";
 
-        return "ReverseLandscape";
+        if (_enum == Enum.Reverse_Landscape)
+            return "Reverse_Landscape";
+
+        return "Unknown";
     }
 
     private Enum _enum;

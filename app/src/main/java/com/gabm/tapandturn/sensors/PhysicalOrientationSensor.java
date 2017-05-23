@@ -14,7 +14,7 @@ import com.gabm.tapandturn.settings.SettingsKeys;
 // borrowed from: http://stackoverflow.com/questions/9021890/get-phone-orientation-but-fix-screen-orientation-to-portrait
 public class PhysicalOrientationSensor extends OrientationEventListener {
 
-    private AbsoluteOrientation curScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Portrait);
+    private AbsoluteOrientation curScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Unknown);
     private OrientationListenerNG listener;
 
     public PhysicalOrientationSensor(Context context, int rate, OrientationListenerNG listener) {
@@ -28,6 +28,12 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
 
     public PhysicalOrientationSensor(Context context) {
         super(context);
+    }
+
+    @Override
+    public void enable() {
+        curScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Unknown);
+        super.enable();
     }
 
     @Override

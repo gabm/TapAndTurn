@@ -66,9 +66,13 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                if (isActive) physicalOrientationSensor.disable();
+                if (isActive) {
+                    physicalOrientationSensor.disable();
+                }
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                if (isActive) physicalOrientationSensor.enable();
+                if (isActive) {
+                    physicalOrientationSensor.enable();
+                }
             }
         }
     };
