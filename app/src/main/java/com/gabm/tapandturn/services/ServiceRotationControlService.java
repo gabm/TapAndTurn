@@ -209,8 +209,16 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         Log.i("OrientationChangeNG", newOrientation.toString());
 
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation())) {
+
+            // if the new orientation is different from what the user requested
             handlerScreenOrientation = newOrientation;
             orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
+
+        } else {
+
+            // if the new orientation is the same as what the user already requested
+            if (orientationButtonOverlay.isActive())
+                orientationButtonOverlay.hide();
         }
     }
 

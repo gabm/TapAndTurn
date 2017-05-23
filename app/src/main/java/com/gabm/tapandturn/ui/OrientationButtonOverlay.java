@@ -47,7 +47,7 @@ public class OrientationButtonOverlay {
     }
 
     public void show(AbsoluteOrientation oldOrientation, AbsoluteOrientation newOrientation) {
-        if (imageButton.getParent() != null)
+        if (isActive())
             curWindowManager.removeView(imageButton);
 
         int iconSizeDP = TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 40);
@@ -222,10 +222,14 @@ public class OrientationButtonOverlay {
     }
 
     public void hide() {
-        if (imageButton.getParent() != null) {
+        if (isActive()) {
             timeoutHandler.removeCallbacks(hideButtonRunnable);
             curWindowManager.removeView(imageButton);
         }
+    }
+
+    public boolean isActive() {
+        return imageButton.getParent() != null;
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
