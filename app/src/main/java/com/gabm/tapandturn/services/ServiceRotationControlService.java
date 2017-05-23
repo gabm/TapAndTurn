@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.gabm.tapandturn.AbsoluteOrientation;
+import com.gabm.tapandturn.sensors.PhysicalOrientationSensorNG;
+import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.ui.MainActivity;
 import com.gabm.tapandturn.R;
-import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
 import com.gabm.tapandturn.ui.OrientationButtonOverlay;
 
@@ -25,24 +27,25 @@ import com.gabm.tapandturn.ui.OrientationButtonOverlay;
  * Created by gabm on 30.10.16.
  */
 
-public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener{
+public class ServiceRotationControlService extends Service implements PhysicalOrientationSensorNG.OrientationListenerNG, View.OnClickListener{
     private NotificationManager mNM;
     private Notification.Builder curNotificationBuilder = null;
 
-    private PhysicalOrientationSensor physicalOrientationSensor;
+    private WindowManagerSensor windowManagerSensor;
+    private PhysicalOrientationSensorNG physicalOrientationSensorNG;
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
-    private boolean initialized = false;
 
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION = R.string.orientation_service_started;
-    private int handlerScreenOrientation;
+    private AbsoluteOrientation handlerScreenOrientation;
 
+    /*
     @Override
     public void onOrientationChange(int newScreenOrientation) {
-        Log.i("Orientation", String.valueOf(newScreenOrientation));
+        Log.i("AbsoluteOrientation", String.valueOf(newScreenOrientation));
 
         if (!initialized) {
             initialize(newScreenOrientation);
@@ -58,12 +61,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         else {
             orientationButtonOverlay.hide();
         }
-    }
+    }*/
 
     @Override
     public void onClick(View view) {
         orientationButtonOverlay.hide();
-        if (handlerScreenOrientation == physicalOrientationSensor.getCurScreenOrientation()) {
+        if (handlerScreenOrientation.equals(physicalOrientationSensorNG.getCurScreenOrientation())) {
             screenRotatorOverlay.changeOrientation(handlerScreenOrientation);
 
             if (screenRotatorOverlay.isDefaultOrientation(handlerScreenOrientation))
@@ -73,28 +76,30 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
             mNM.notify(NOTIFICATION, curNotificationBuilder.build());
         }
-
     }
-    private void initialize(int defaultOrientation) {
+
+    private void initialize() {
 
         // Initialize layout params
         WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, defaultOrientation);
+        screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager);
         orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
-
-        initialized = true;
     }
 
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
-        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
-        physicalOrientationSensor.enable();
+        physicalOrientationSensorNG = new PhysicalOrientationSensorNG(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
+        physicalOrientationSensorNG.enable();
+
+        windowManagerSensor = new WindowManagerSensor((WindowManager) getSystemService(WINDOW_SERVICE));
+
+        initialize();
     }
 
 
@@ -111,7 +116,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         screenRotatorOverlay.removeView();
         orientationButtonOverlay.hide();
 
-        physicalOrientationSensor.disable();
+        physicalOrientationSensorNG.disable();
 
         // Cancel the persistent notification.
         mNM.cancel(NOTIFICATION);
@@ -149,6 +154,17 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         // Send the notification.
         mNM.notify(NOTIFICATION, curNotificationBuilder.build());
+    }
+
+    @Override
+    public void onOrientationChangeNG(AbsoluteOrientation screenOrientation) {
+        Log.i("OrientationChangeNG", screenOrientation.toString());
+        Log.i("WindowManagerSensor", windowManagerSensor.query().toString());
+
+        if (!screenOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation())) {
+            handlerScreenOrientation = screenOrientation;
+            orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation().toActivityInfoOrientation(), screenOrientation.toActivityInfoOrientation());
+        }
     }
 
 

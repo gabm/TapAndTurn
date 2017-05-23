@@ -59,7 +59,7 @@ public class OrientationButtonOverlay {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
                 PixelFormat.TRANSLUCENT);
 
-        layoutParams.screenOrientation = oldOrientation;
+        //layoutParams.screenOrientation = oldOrientation;
         layoutParams.gravity = getButtonAlignment(oldOrientation, newOrientation, TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
         curWindowManager.addView(imageButton, layoutParams);
 

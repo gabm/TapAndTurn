@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import com.gabm.tapandturn.AbsoluteOrientation;
+import com.gabm.tapandturn.sensors.WindowManagerSensor;
+
 /**
  * Created by gabm on 31.10.16.
  */
@@ -15,43 +18,40 @@ import android.widget.LinearLayout;
 public class ScreenRotatorOverlay {
     private LinearLayout dummyLayout;
     private WindowManager curWindowManager;
-    private int currentlySetScreenOrientation ;
-    private int defaultOrientation;
+    private AbsoluteOrientation currentlySetScreenOrientation ;
+    private WindowManagerSensor windowManagerSensor;
 
-
-    public ScreenRotatorOverlay(Context context, WindowManager windowManager, int orientation, int defaultOrientation) {
+    public ScreenRotatorOverlay(Context context, WindowManager windowManager) {
         dummyLayout = new LinearLayout(context);
         curWindowManager = windowManager;
-        this.defaultOrientation = defaultOrientation;
-
-        changeOrientation(orientation);
+        windowManagerSensor = new WindowManagerSensor(windowManager);
+        currentlySetScreenOrientation = windowManagerSensor.query();
     }
 
-    public int getCurrentlySetScreenOrientation() {
+    public boolean isDefaultOrientation(AbsoluteOrientation orientation) {
+        return windowManagerSensor.query().equals(orientation);
+    }
+    public AbsoluteOrientation getCurrentlySetScreenOrientation() {
         return currentlySetScreenOrientation;
     }
 
-    public boolean isDefaultOrientation(int orientation) {
-        return orientation == defaultOrientation;
-    }
-    public void changeOrientation(int orientation) {
+    public void changeOrientation(AbsoluteOrientation orientation) {
         removeView();
 
         // if requested orientation is different from the device configured orientation
         // then enforece the new rotation by adding an overlay
-        if (!isDefaultOrientation(orientation)) {
+       // if (!isDefaultOrientation(orientation)) {
 
-            Log.i("Overlay", "Adding for " + orientation);
-            Log.i("Overlay", "Configured orientation " + defaultOrientation);
+            Log.i("Overlay", "Adding for " + orientation.toString());
 
             WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
-            dummyParams.screenOrientation = orientation;
+            dummyParams.screenOrientation = orientation.toActivityInfoOrientation();
 
             curWindowManager.addView(dummyLayout, dummyParams);
 
-        } else {
+        /*} else {
             Log.i("Overlay", "Not adding anything");
-        }
+        }*/
 
         currentlySetScreenOrientation = orientation;
     }

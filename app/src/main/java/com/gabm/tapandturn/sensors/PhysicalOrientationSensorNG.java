@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.view.OrientationEventListener;
 
+import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.settings.SettingsKeys;
 
@@ -12,21 +13,21 @@ import com.gabm.tapandturn.settings.SettingsKeys;
  */
 
 // borrowed from: http://stackoverflow.com/questions/9021890/get-phone-orientation-but-fix-screen-orientation-to-portrait
-public class PhysicalOrientationSensor extends OrientationEventListener {
+public class PhysicalOrientationSensorNG extends OrientationEventListener {
 
-    private int curScreenOrientation;
-    private OrientationListener listener;
+    private AbsoluteOrientation curScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Portrait);
+    private OrientationListenerNG listener;
 
-    public PhysicalOrientationSensor(Context context, int rate, OrientationListener listener) {
+    public PhysicalOrientationSensorNG(Context context, int rate, OrientationListenerNG listener) {
         super(context, rate);
         setListener(listener);
     }
 
-    public PhysicalOrientationSensor(Context context, int rate) {
+    public PhysicalOrientationSensorNG(Context context, int rate) {
         super(context, rate);
     }
 
-    public PhysicalOrientationSensor(Context context) {
+    public PhysicalOrientationSensorNG(Context context) {
         super(context);
     }
 
@@ -36,21 +37,21 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
             return;
         }
 
-        int newOrientation;
+        AbsoluteOrientation newOrientation;
         if (orientation >= 60 && orientation <= 140){
-            newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+            newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Reverse_Landscape);
         } else if (orientation >= 140 && orientation <= 220) {
-            newOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+            newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Reverse_Portrait);
         } else if (orientation >= 220 && orientation <= 300) {
-            newOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Landscape);
         } else {
-            newOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Portrait);
         }
 
-        if(newOrientation != curScreenOrientation) {
+        if(!newOrientation.equals(curScreenOrientation)) {
 
             // if the device is in reverse portrait mode
-            if (newOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)
+            if (newOrientation.equals(AbsoluteOrientation.Enum.Reverse_Portrait))
                 // and reverse portrait mode got disabled
                 if (!TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false))
                     // then ignore
@@ -58,20 +59,20 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
 
             curScreenOrientation = newOrientation;
             if(listener != null){
-                listener.onOrientationChange(curScreenOrientation);
+                listener.onOrientationChangeNG(curScreenOrientation);
             }
         }
     }
 
-    public void setListener(OrientationListener listener){
+    public void setListener(OrientationListenerNG listener){
         this.listener = listener;
     }
 
-    public int getCurScreenOrientation(){
+    public AbsoluteOrientation getCurScreenOrientation(){
         return curScreenOrientation;
     }
 
-    public interface OrientationListener {
-        void onOrientationChange(int screenOrientation);
+    public interface OrientationListenerNG {
+        void onOrientationChangeNG(AbsoluteOrientation screenOrientation);
     }
 }
