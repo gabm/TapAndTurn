@@ -1,6 +1,7 @@
 package com.gabm.tapandturn.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.util.Log;
 import android.view.WindowManager;
@@ -20,6 +21,7 @@ public class ScreenRotatorOverlay {
 
     public ScreenRotatorOverlay(Context context, WindowManager windowManager) {
         dummyLayout = new LinearLayout(context);
+
         curWindowManager = windowManager;
         currentlySetScreenOrientation = WindowManagerSensor.query(windowManager);
 
@@ -37,6 +39,9 @@ public class ScreenRotatorOverlay {
 
         WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
         dummyParams.screenOrientation = orientation.toActivityInfoOrientation();
+        dummyParams.height = 0;
+        dummyParams.width = 0;
+
 
         curWindowManager.addView(dummyLayout, dummyParams);
 
