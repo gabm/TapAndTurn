@@ -43,14 +43,16 @@ public class PhysicalOrientationSensor extends OrientationEventListener {
         }
 
         AbsoluteOrientation newOrientation;
-        if (orientation >= 60 && orientation <= 140){
+        if (orientation >= 65 && orientation <= 115){
             newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Reverse_Landscape);
-        } else if (orientation >= 140 && orientation <= 220) {
+        } else if (orientation >= 155 && orientation <= 205) {
             newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Reverse_Portrait);
-        } else if (orientation >= 220 && orientation <= 300) {
+        } else if (orientation >= 245 && orientation <= 295) {
             newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Landscape);
-        } else {
+        } else if ((orientation >= 335 && orientation < 360) || (orientation >= 0 && orientation <= 25)){
             newOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Portrait);
+        } else {
+            return;
         }
 
         if(!newOrientation.equals(curScreenOrientation)) {
