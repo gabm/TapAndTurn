@@ -12,14 +12,8 @@ import com.gabm.tapandturn.RelativeOrientation;
 
 public class WindowManagerSensor {
 
-    private WindowManager _windowManager;
-
-    public WindowManagerSensor(WindowManager windowManager) {
-        _windowManager = windowManager;
-    }
-
-    public AbsoluteOrientation query() {
-        int rawResult = _windowManager.getDefaultDisplay().getRotation();
+    public static AbsoluteOrientation query(WindowManager windowManager) {
+        int rawResult = windowManager.getDefaultDisplay().getRotation();
 
         if (rawResult == Surface.ROTATION_90)
             return new AbsoluteOrientation(AbsoluteOrientation.Enum.Landscape);

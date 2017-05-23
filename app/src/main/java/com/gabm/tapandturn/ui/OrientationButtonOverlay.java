@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.settings.SettingsKeys;
@@ -45,7 +46,7 @@ public class OrientationButtonOverlay {
         timeoutHandler = new Handler();
     }
 
-    public void show(int oldOrientation, int newOrientation) {
+    public void show(AbsoluteOrientation oldOrientation, AbsoluteOrientation newOrientation) {
         if (imageButton.getParent() != null)
             curWindowManager.removeView(imageButton);
 
@@ -67,79 +68,79 @@ public class OrientationButtonOverlay {
         timeoutHandler.postDelayed(hideButtonRunnable, TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 4000));
     }
 
-    private int getButtonAlignment(int oldScreenOrientation, int newScreenOrientation, boolean leftHanded) {
+    private int getButtonAlignment(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation, boolean leftHanded) {
         if (leftHanded)
             return getButtonAlignmentLeftHanded(oldScreenOrientation, newScreenOrientation);
         else
             return getButtonAlignmentRightHanded(oldScreenOrientation, newScreenOrientation);
     }
 
-    private int getButtonAlignmentLeftHanded(int oldScreenOrientation, int newScreenOrientation) {
+    private int getButtonAlignmentLeftHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
         Log.i("OrientationChange:", "right handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
 
         // coming from portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (oldScreenOrientation.isPortrait()) {
+            if (newScreenOrientation.isLandscape()) {
                 return Gravity.TOP | Gravity.RIGHT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            if (newScreenOrientation.isReverseLandscape()) {
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+            if (newScreenOrientation.isReversePortrait()){
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
         }
 
         // coming from landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+        if (oldScreenOrientation.isLandscape()) {
+            if (newScreenOrientation.isPortrait()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            if (newScreenOrientation.isReversePortrait()) {
                 return Gravity.TOP | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+            if (newScreenOrientation.isReverseLandscape()){
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
         }
 
         // coming from reverse landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+        if (oldScreenOrientation.isReverseLandscape()) {
+            if (newScreenOrientation.isPortrait()){
                 return Gravity.TOP | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+            if (newScreenOrientation.isReversePortrait()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            if (newScreenOrientation.isLandscape()){
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
         }
 
         // coming from reverse portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+        if (oldScreenOrientation.isReversePortrait()) {
+            if (newScreenOrientation.isReverseLandscape()){
                 return Gravity.TOP | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            if (newScreenOrientation.isLandscape()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            if (newScreenOrientation.isPortrait()) {
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
         }
@@ -147,72 +148,72 @@ public class OrientationButtonOverlay {
         return Gravity.CENTER;
     }
 
-    private int getButtonAlignmentRightHanded(int oldScreenOrientation, int newScreenOrientation) {
+    private int getButtonAlignmentRightHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
         Log.i("OrientationChange:", "left handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
 
         // coming from portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (oldScreenOrientation.isPortrait()) {
+            if (newScreenOrientation.isLandscape()) {
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            if (newScreenOrientation.isReverseLandscape()) {
                 return Gravity.TOP | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+            if (newScreenOrientation.isReversePortrait()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
 
         // coming from landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+        if (oldScreenOrientation.isLandscape()) {
+            if (newScreenOrientation.isPortrait()){
                 return Gravity.TOP | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+            if (newScreenOrientation.isReversePortrait()) {
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+            if (newScreenOrientation.isReverseLandscape()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
 
         // coming from reverse landscape
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+        if (oldScreenOrientation.isReverseLandscape()) {
+            if (newScreenOrientation.isPortrait()){
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT){
+            if (newScreenOrientation.isReverseLandscape()){
                 return Gravity.TOP | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            if (newScreenOrientation.isLandscape()){
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
 
         }
 
         // coming from reverse portrait
-        if (oldScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE){
+        if (oldScreenOrientation.isReversePortrait()) {
+            if (newScreenOrientation.isReverseLandscape()){
                 return Gravity.BOTTOM | Gravity.RIGHT;
             }
 
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            if (newScreenOrientation.isLandscape()){
                 return Gravity.TOP | Gravity.LEFT;
             }
 
-            if (newScreenOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            if (newScreenOrientation.isPortrait()) {
                 return Gravity.BOTTOM | Gravity.LEFT;
             }
         }

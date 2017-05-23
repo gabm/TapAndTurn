@@ -28,6 +28,22 @@ public class AbsoluteOrientation {
         return new RelativeOrientation(diff(_enum, to));
     }
 
+    public boolean isPortrait() {
+        return this.equals(Enum.Portrait);
+    }
+
+    public boolean isReversePortrait() {
+        return this.equals(Enum.Reverse_Portrait);
+    }
+
+    public boolean isLandscape() {
+        return this.equals(Enum.Landscape);
+    }
+
+    public boolean isReverseLandscape() {
+        return this.equals(Enum.Reverse_Landscape);
+    }
+
     public boolean equals(AbsoluteOrientation.Enum otherEnum) {
         return _enum == otherEnum;
     }

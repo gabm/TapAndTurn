@@ -1,7 +1,6 @@
 package com.gabm.tapandturn.sensors;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.view.OrientationEventListener;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
@@ -13,21 +12,21 @@ import com.gabm.tapandturn.settings.SettingsKeys;
  */
 
 // borrowed from: http://stackoverflow.com/questions/9021890/get-phone-orientation-but-fix-screen-orientation-to-portrait
-public class PhysicalOrientationSensorNG extends OrientationEventListener {
+public class PhysicalOrientationSensor extends OrientationEventListener {
 
     private AbsoluteOrientation curScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Portrait);
     private OrientationListenerNG listener;
 
-    public PhysicalOrientationSensorNG(Context context, int rate, OrientationListenerNG listener) {
+    public PhysicalOrientationSensor(Context context, int rate, OrientationListenerNG listener) {
         super(context, rate);
         setListener(listener);
     }
 
-    public PhysicalOrientationSensorNG(Context context, int rate) {
+    public PhysicalOrientationSensor(Context context, int rate) {
         super(context, rate);
     }
 
-    public PhysicalOrientationSensorNG(Context context) {
+    public PhysicalOrientationSensor(Context context) {
         super(context);
     }
 
@@ -59,7 +58,7 @@ public class PhysicalOrientationSensorNG extends OrientationEventListener {
 
             curScreenOrientation = newOrientation;
             if(listener != null){
-                listener.onOrientationChangeNG(curScreenOrientation);
+                listener.onOrientationChange(curScreenOrientation);
             }
         }
     }
@@ -73,6 +72,6 @@ public class PhysicalOrientationSensorNG extends OrientationEventListener {
     }
 
     public interface OrientationListenerNG {
-        void onOrientationChangeNG(AbsoluteOrientation screenOrientation);
+        void onOrientationChange(AbsoluteOrientation screenOrientation);
     }
 }
