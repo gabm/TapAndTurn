@@ -46,13 +46,8 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     @Override
     public void onClick(View view) {
         orientationButtonOverlay.hide();
-        if (handlerScreenOrientation.equals(physicalOrientationSensor.getCurScreenOrientation())) {
+        if (handlerScreenOrientation.equals(physicalOrientationSensor.getCurScreenOrientation()))
             screenRotatorOverlay.forceOrientation(handlerScreenOrientation);
-
-            curNotificationBuilder.setContentText(getText(R.string.notification_service_active) + ": "  + getText(R.string.screen_overlay));
-
-            mNM.notify(NOTIFICATION, curNotificationBuilder.build());
-        }
     }
 
     private BroadcastReceiver toggleActiveBroadcastReceiver = new BroadcastReceiver() {
@@ -126,7 +121,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         curNotificationBuilder
                 .setContentTitle(getText(R.string.notification_service_not_active))
-                .setContentText(getText(R.string.no_screen_overlay));
+                .setContentText(getText(R.string.touch_to_enable));
         mNM.notify(NOTIFICATION, curNotificationBuilder.build());
     }
 
@@ -141,7 +136,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         curNotificationBuilder
                 .setContentTitle(getText(R.string.notification_service_active))
-                .setContentText(getText(R.string.screen_overlay));
+                .setContentText(getText(R.string.touch_to_disable));
         mNM.notify(NOTIFICATION, curNotificationBuilder.build());
     }
 
@@ -194,7 +189,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         curNotificationBuilder.setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
                 .setWhen(System.currentTimeMillis())  // the time stamp
                 .setContentTitle(text)  // the label of the entry
-                .setContentText(getText(R.string.no_screen_overlay))  // the contents of the entry
+                .setContentText(getText(R.string.touch_to_enable))  // the contents of the entry
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
                 .setPriority(Notification.PRIORITY_MIN)
                 .setShowWhen(false)
@@ -206,7 +201,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
     @Override
     public void onOrientationChange(AbsoluteOrientation newOrientation) {
-        Log.i("OrientationChangeNG", newOrientation.toString());
+        Log.i("OrientationChange", newOrientation.toString());
 
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation())) {
 
