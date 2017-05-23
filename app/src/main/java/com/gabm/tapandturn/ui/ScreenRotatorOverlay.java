@@ -46,10 +46,14 @@ public class ScreenRotatorOverlay {
 
     // Immidiately removes the current view
     public void removeView() {
-        if (dummyLayout.getParent() != null) {
+        if (isActive()) {
             Log.i("Overlay", "Removing overlay");
 
             curWindowManager.removeView(dummyLayout);
         }
+    }
+
+    public boolean isActive() {
+        return dummyLayout.getParent() != null;
     }
 }

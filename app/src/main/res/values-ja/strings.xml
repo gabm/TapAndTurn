@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Tap \'n\' Turn</string>
     <string name="action_settings">設定</string>
-    <string name="orientation_service_started">実行しています</string>
-    <string name="orientation_service_stopped">Tap \'n\' Turn サービスは停止しました</string>
+    <string name="notification_service_active">実行しています</string>
+    <string name="toast_service_stopped">Tap \'n\' Turn サービスは停止しました</string>
     <string name="orientation_service_label">Tap \'n\' Turn サービス</string>
     <string name="service_running">Tap \'n\' Turn サービスは実行しています</string>
     <string name="request_permission">アクセス許可の要求</string>

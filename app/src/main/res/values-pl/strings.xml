@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Tap \'n\' Turn</string>
     <string name="action_settings">Ustawienia</string>
-    <string name="orientation_service_started">Uruchomiona</string>
-    <string name="orientation_service_stopped">Usługa Tap \'n\' Turn przestała działać</string>
+    <string name="notification_service_active">Uruchomiona</string>
+    <string name="toast_service_stopped">Usługa Tap \'n\' Turn przestała działać</string>
     <string name="orientation_service_label">Usługa Tap \'n\' Turn</string>
     <string name="service_running">Usługa Tap \'n\' Turn jest uruchomiona</string>
     <string name="request_permission">Wymaga zezwolenia</string>

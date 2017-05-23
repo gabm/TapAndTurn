@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -16,7 +18,7 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
-import com.gabm.tapandturn.ui.MainActivity;
+import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
 import com.gabm.tapandturn.ui.OrientationButtonOverlay;
@@ -32,13 +34,14 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     private PhysicalOrientationSensor physicalOrientationSensor;
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
-
+    private WindowManager windowManager;
+    private boolean isActive = false;
 
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = R.string.orientation_service_started;
+    private int NOTIFICATION = R.string.notification_service_active;
     private AbsoluteOrientation handlerScreenOrientation;
-
+    private final String TOGGLE_ACTIVE_BROADCAST = "ToggleActiveBroadcast";
 
     @Override
     public void onClick(View view) {
@@ -46,7 +49,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         if (handlerScreenOrientation.equals(physicalOrientationSensor.getCurScreenOrientation())) {
             screenRotatorOverlay.forceOrientation(handlerScreenOrientation);
 
-            curNotificationBuilder.setContentText(getText(R.string.orientation_service_started) + ": "  + getText(R.string.screen_overlay));
+            curNotificationBuilder.setContentText(getText(R.string.notification_service_active) + ": "  + getText(R.string.screen_overlay));
 
             mNM.notify(NOTIFICATION, curNotificationBuilder.build());
         }
@@ -60,15 +63,59 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         physicalOrientationSensor.enable();
 
         // Initialize layout params
-        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         screenRotatorOverlay = new ScreenRotatorOverlay(getApplicationContext(), windowManager);
         orientationButtonOverlay = new OrientationButtonOverlay(getApplicationContext(), windowManager, this);
 
+
+        IntentFilter filter = new IntentFilter(TOGGLE_ACTIVE_BROADCAST);
+        registerReceiver(broadcastReceiver, filter);
+
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
+
+        activate();
     }
 
+    protected void deactivate() {
+        if (!isActive)
+            return;
+
+        isActive = false;
+        screenRotatorOverlay.removeView();
+        orientationButtonOverlay.hide();
+        physicalOrientationSensor.disable();
+
+        curNotificationBuilder
+                .setTicker(getText(R.string.notification_service_not_active))
+                .setContentTitle(getText(R.string.notification_service_not_active))
+                .setContentText(getText(R.string.no_screen_overlay));
+        mNM.notify(NOTIFICATION, curNotificationBuilder.build());
+    }
+
+    protected void activate() {
+        if (isActive)
+            return;
+
+        isActive = true;
+        screenRotatorOverlay.forceOrientation(WindowManagerSensor.query(windowManager));
+        orientationButtonOverlay.hide();
+        physicalOrientationSensor.enable();
+
+        curNotificationBuilder
+                .setTicker(getText(R.string.notification_service_active))
+                .setContentTitle(getText(R.string.notification_service_active))
+                .setContentText(getText(R.string.screen_overlay));
+        mNM.notify(NOTIFICATION, curNotificationBuilder.build());
+    }
+
+    protected void toggleActive() {
+        if (isActive)
+            deactivate();
+        else
+            activate();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -89,7 +136,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         mNM.cancel(NOTIFICATION);
 
         // Tell the user we stopped.
-        Toast.makeText(this, R.string.orientation_service_stopped, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_service_stopped, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -97,23 +144,29 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         return mBinder;
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            toggleActive();
+        }
+    };
     /**
      * Show a notification while this service is running.
      */
     private void showNotification() {
         // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.orientation_service_started);
+        CharSequence text = getText(R.string.notification_service_not_active);
 
         // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getBroadcast(this, 0,
+                new Intent(TOGGLE_ACTIVE_BROADCAST), 0);
 
         curNotificationBuilder = new Notification.Builder(this);
         curNotificationBuilder.setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(getText(R.string.screen_overlay))  // the label of the entry
-                .setContentText(text)  // the contents of the entry
+                .setContentTitle(text)  // the label of the entry
+                .setContentText(getText(R.string.no_screen_overlay))  // the contents of the entry
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
                 .setPriority(Notification.PRIORITY_MIN)
                 .setShowWhen(false)
