@@ -16,4 +16,7 @@
     <string name="screen_overlay">Restricted buttons are inaccessible!</string>
     <string name="introduction">Tap \'n\' Turn should be run with auto-rotation enabled. It will enforce the user selected orientation by drawing an invisible overlay over the screen. That is why it needs that permission. However: this overlay is keeping you from using restricted buttons, such as the "Install" button when installing apps. This is a sensible standard behavior of Android and cannot be altered. However, you can disable the screen overlay temporarily by touching the notification.</string>
     <string name="introduction_title">Introduction</string>
+    <string name="configuration_title">Configuration</string>
+    <string name="icon_size">Icon Size</string>
+    <string name="icon_timeout">Icon Timeout</string>
 </resources>
