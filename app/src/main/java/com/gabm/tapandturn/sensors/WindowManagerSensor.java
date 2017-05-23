@@ -4,7 +4,6 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
-import com.gabm.tapandturn.RelativeOrientation;
 
 /**
  * Created by gabm on 23/05/17.
