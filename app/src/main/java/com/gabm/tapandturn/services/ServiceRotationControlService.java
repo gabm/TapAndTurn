@@ -121,7 +121,6 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         physicalOrientationSensor.disable();
 
         curNotificationBuilder
-                .setTicker(getText(R.string.notification_service_not_active))
                 .setContentTitle(getText(R.string.notification_service_not_active))
                 .setContentText(getText(R.string.no_screen_overlay));
         mNM.notify(NOTIFICATION, curNotificationBuilder.build());
@@ -137,7 +136,6 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         physicalOrientationSensor.enable();
 
         curNotificationBuilder
-                .setTicker(getText(R.string.notification_service_active))
                 .setContentTitle(getText(R.string.notification_service_active))
                 .setContentText(getText(R.string.screen_overlay));
         mNM.notify(NOTIFICATION, curNotificationBuilder.build());
@@ -190,7 +188,6 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         curNotificationBuilder = new Notification.Builder(this);
         curNotificationBuilder.setSmallIcon(R.mipmap.ic_screen_rotation_black_48dp)  // the status icon
-                .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
                 .setContentTitle(text)  // the label of the entry
                 .setContentText(getText(R.string.no_screen_overlay))  // the contents of the entry
