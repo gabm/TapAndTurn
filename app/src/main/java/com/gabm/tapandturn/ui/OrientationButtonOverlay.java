@@ -1,7 +1,6 @@
 package com.gabm.tapandturn.ui;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.util.Log;
@@ -9,7 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.R;
@@ -22,7 +21,8 @@ import com.gabm.tapandturn.settings.SettingsKeys;
 
 public class OrientationButtonOverlay {
     private WindowManager curWindowManager;
-    private ImageButton imageButton;
+    private FrameLayout parentLayout;
+    private Circle circle;
     private Handler timeoutHandler;
     private Context curContext;
 
@@ -39,33 +39,41 @@ public class OrientationButtonOverlay {
         curWindowManager =windowManager;
         curContext = context;
 
-        imageButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.rotation_button, null);
-        imageButton.setOnClickListener(listener);
+        circle = (Circle) LayoutInflater.from(context).inflate(R.layout.rotation_button_circle, null);
+        circle.setOnClickListener(listener);
+        circle.setAngleTo(80);
 
         hideButtonRunnable = new HideButtonRunnable();
         timeoutHandler = new Handler();
+        parentLayout = new FrameLayout(context);
+        parentLayout.addView(circle);
     }
 
     public void show(AbsoluteOrientation oldOrientation, AbsoluteOrientation newOrientation) {
         if (isActive())
-            curWindowManager.removeView(imageButton);
+            curWindowManager.removeView(parentLayout);
 
-        int iconSizeDP = TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 62);
+        final int iconSizeDP = TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 62);
         final int iconSizePx = (int)(curContext.getResources().getDisplayMetrics().density * iconSizeDP + 0.5);
-
+        final int iconTimeoutMS = TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 2000);
+        final boolean leftHandedMode = TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false);
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 iconSizePx, iconSizePx,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
                 PixelFormat.TRANSLUCENT);
+        layoutParams.gravity = getButtonAlignment(oldOrientation, newOrientation, leftHandedMode);
 
-        //layoutParams.screenOrientation = oldOrientation;
-        layoutParams.gravity = getButtonAlignment(oldOrientation, newOrientation, TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
-        curWindowManager.addView(imageButton, layoutParams);
+        circle.setAngleFrom(0);
+        circle.setAngleTo(0);
+        curWindowManager.addView(parentLayout, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);
-        timeoutHandler.postDelayed(hideButtonRunnable, TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 2000));
+        timeoutHandler.postDelayed(hideButtonRunnable, iconTimeoutMS);
+
+        CircleAngleAnimation animation = new CircleAngleAnimation(circle, 45, 315, (int)(iconTimeoutMS*0.5));
+        circle.startAnimation(animation);
     }
 
     private int getButtonAlignment(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation, boolean leftHanded) {
@@ -224,15 +232,15 @@ public class OrientationButtonOverlay {
     public void hide() {
         if (isActive()) {
             timeoutHandler.removeCallbacks(hideButtonRunnable);
-            curWindowManager.removeView(imageButton);
+            curWindowManager.removeView(parentLayout);
         }
     }
 
     public boolean isActive() {
-        return imageButton.getParent() != null;
+        return parentLayout.getParent() != null;
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
-        imageButton.setOnClickListener(listener);
+        circle.setOnClickListener(listener);
     }
 }
