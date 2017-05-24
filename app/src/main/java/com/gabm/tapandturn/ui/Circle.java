@@ -46,7 +46,7 @@ public class Circle extends View {
 
         float outerBoxLength = getWidth();
 
-        int strokeWidth = (int)outerBoxLength/10;
+        int strokeWidth = (int)(outerBoxLength*0.12f);
         float arrowSize = strokeWidth;
         float arrowOpening = strokeWidth;
 
