@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -55,10 +56,12 @@ public class Circle extends View {
         float circleRadius = boxCenter - outerPadding;
 
         Paint circlePaint = new Paint();
+        circlePaint.setShadowLayer(12,0,12, 0x55000000);
         circlePaint.setAntiAlias(true);
         circlePaint.setStrokeWidth(strokeWidth);
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setColor(getResources().getColor(R.color.colorAccent));
+        setLayerType(LAYER_TYPE_SOFTWARE, circlePaint);
 
         // draw oval
         Path circlePath = new Path();
@@ -97,8 +100,6 @@ public class Circle extends View {
         arrowPath.lineTo(arrowHeadX, arrowHeadY);
 
         canvas.drawPath(arrowPath, circlePaint);
-
-
     }
     public float getAngleTo() {
         return angleTo;

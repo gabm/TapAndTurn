@@ -63,7 +63,10 @@ public class OrientationButtonOverlay {
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
                 PixelFormat.TRANSLUCENT);
-        layoutParams.gravity = getButtonAlignment(oldOrientation, newOrientation, leftHandedMode);
+        AlignmentInfo alignmentInfo = getButtonAlignment(oldOrientation, newOrientation, leftHandedMode);
+        layoutParams.gravity = alignmentInfo.gravityFlag;
+
+        circle.setRotation(alignmentInfo.rotation);
 
         circle.setAngleFrom(0);
         circle.setAngleTo(0);
@@ -76,29 +79,40 @@ public class OrientationButtonOverlay {
         circle.startAnimation(animation);
     }
 
-    private int getButtonAlignment(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation, boolean leftHanded) {
+    class AlignmentInfo {
+        int gravityFlag;
+        float rotation;
+    }
+
+    private AlignmentInfo getButtonAlignment(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation, boolean leftHanded) {
         if (leftHanded)
             return getButtonAlignmentLeftHanded(oldScreenOrientation, newScreenOrientation);
         else
             return getButtonAlignmentRightHanded(oldScreenOrientation, newScreenOrientation);
     }
 
-    private int getButtonAlignmentLeftHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
+    private AlignmentInfo getButtonAlignmentLeftHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
         Log.i("OrientationChange:", "right handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
+        AlignmentInfo alignmentInfo = new AlignmentInfo();
+        alignmentInfo.rotation = 0;
+        alignmentInfo.gravityFlag = Gravity.CENTER;
 
         // coming from portrait
         if (oldScreenOrientation.isPortrait()) {
             if (newScreenOrientation.isLandscape()) {
-                return Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
             if (newScreenOrientation.isReverseLandscape()) {
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isReversePortrait()){
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -106,16 +120,19 @@ public class OrientationButtonOverlay {
         // coming from landscape
         if (oldScreenOrientation.isLandscape()) {
             if (newScreenOrientation.isPortrait()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isReversePortrait()) {
-                return Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
             if (newScreenOrientation.isReverseLandscape()){
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -123,16 +140,19 @@ public class OrientationButtonOverlay {
         // coming from reverse landscape
         if (oldScreenOrientation.isReverseLandscape()) {
             if (newScreenOrientation.isPortrait()){
-                return Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
             if (newScreenOrientation.isReversePortrait()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isLandscape()){
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -140,38 +160,47 @@ public class OrientationButtonOverlay {
         // coming from reverse portrait
         if (oldScreenOrientation.isReversePortrait()) {
             if (newScreenOrientation.isReverseLandscape()){
-                return Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
             if (newScreenOrientation.isLandscape()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isPortrait()) {
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 180;
             }
         }
 
-        return Gravity.CENTER;
+        return alignmentInfo;
     }
 
-    private int getButtonAlignmentRightHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
+    private AlignmentInfo getButtonAlignmentRightHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
         Log.i("OrientationChange:", "left handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
+        AlignmentInfo alignmentInfo = new AlignmentInfo();
+        alignmentInfo.rotation = 0;
+        alignmentInfo.gravityFlag = Gravity.CENTER;
 
         // coming from portrait
         if (oldScreenOrientation.isPortrait()) {
             if (newScreenOrientation.isLandscape()) {
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
             if (newScreenOrientation.isReverseLandscape()) {
-                return Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isReversePortrait()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -179,16 +208,19 @@ public class OrientationButtonOverlay {
         // coming from landscape
         if (oldScreenOrientation.isLandscape()) {
             if (newScreenOrientation.isPortrait()){
-                return Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isReversePortrait()) {
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
             if (newScreenOrientation.isReverseLandscape()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -196,16 +228,19 @@ public class OrientationButtonOverlay {
         // coming from reverse landscape
         if (oldScreenOrientation.isReverseLandscape()) {
             if (newScreenOrientation.isPortrait()){
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
-            if (newScreenOrientation.isReverseLandscape()){
-                return Gravity.TOP | Gravity.LEFT;
+            if (newScreenOrientation.isReversePortrait()){
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isLandscape()){
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 180;
             }
 
         }
@@ -213,20 +248,23 @@ public class OrientationButtonOverlay {
         // coming from reverse portrait
         if (oldScreenOrientation.isReversePortrait()) {
             if (newScreenOrientation.isReverseLandscape()){
-                return Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.RIGHT;
+                alignmentInfo.rotation = 90;
             }
 
 
             if (newScreenOrientation.isLandscape()){
-                return Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.TOP | Gravity.LEFT;
+                alignmentInfo.rotation = 270;
             }
 
             if (newScreenOrientation.isPortrait()) {
-                return Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.gravityFlag = Gravity.BOTTOM | Gravity.LEFT;
+                alignmentInfo.rotation = 180;
             }
         }
 
-        return Gravity.CENTER;
+        return alignmentInfo;
     }
 
     public void hide() {
