@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
-import com.gabm.tapandturn.sensors.PhysicalOrientationSensor2;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
@@ -28,12 +26,11 @@ import com.gabm.tapandturn.ui.OrientationButtonOverlay;
  * Created by gabm on 30.10.16.
  */
 
-public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListenerNG, View.OnClickListener{
+public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener{
     private NotificationManager mNM;
     private Notification.Builder curNotificationBuilder = null;
 
     private PhysicalOrientationSensor physicalOrientationSensor;
-    private PhysicalOrientationSensor2 physicalOrientationSensor2;
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
     private WindowManager windowManager;
@@ -65,12 +62,10 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
-                    physicalOrientationSensor2.disable();
                 }
             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
                 if (isActive) {
                     physicalOrientationSensor.enable();
-                    physicalOrientationSensor2.enable();
                 }
             }
         }
@@ -97,11 +92,8 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
-        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
+        physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), this);
         physicalOrientationSensor.enable();
-
-        physicalOrientationSensor2 = new PhysicalOrientationSensor2(getApplicationContext());
-        physicalOrientationSensor2.enable();
 
         // Initialize layout params
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -210,7 +202,8 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     public void onOrientationChange(AbsoluteOrientation newOrientation) {
         Log.i("OrientationChange", newOrientation.toString());
 
-        if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation())) {
+
+        if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
             // if the new orientation is different from what the user requested
             handlerScreenOrientation = newOrientation;
