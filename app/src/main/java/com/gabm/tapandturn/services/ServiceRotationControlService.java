@@ -78,7 +78,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
 
         registerReceiver(screenOffBroadcastReceiver, filter);
     }
