@@ -50,30 +50,35 @@ public class Circle extends View {
         float arrowSize = strokeWidth;
         float arrowOpening = strokeWidth;
 
-        float outerPadding = strokeWidth/2 + arrowOpening/2 + outerBoxLength/10; // on both sides each
+        float outerPadding = strokeWidth/2 + arrowOpening/2 + outerBoxLength/6; // on both sides each
 
         float boxCenter = outerBoxLength/2;
         float circleRadius = boxCenter - outerPadding;
 
-        Paint circlePaint = new Paint();
-        circlePaint.setShadowLayer(12,0,12, 0x55000000);
-        circlePaint.setAntiAlias(true);
-        circlePaint.setStrokeWidth(strokeWidth);
-        circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(getResources().getColor(R.color.colorAccent));
-        setLayerType(LAYER_TYPE_SOFTWARE, circlePaint);
+        Paint paint = new Paint();
+        paint.setShadowLayer(12,0,0, 0x44000000);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(strokeWidth);
+        setLayerType(LAYER_TYPE_SOFTWARE, paint);
+
+        // draw background
+        paint.setColor(Color.parseColor("#44000000"));
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(boxCenter, boxCenter, boxCenter-12, paint);
 
         // draw oval
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(getResources().getColor(R.color.colorAccent));
         Path circlePath = new Path();
         final RectF arrowOval = new RectF(outerPadding, outerPadding, outerBoxLength-outerPadding, outerBoxLength-outerPadding);
         circlePath.addArc(arrowOval, angleFrom,angleTo-angleFrom);
-        canvas.drawPath(circlePath, circlePaint);
+        canvas.drawPath(circlePath, paint);
 
 
         // draw arrow head
         Path arrowPath = new Path();
-        circlePaint.setStyle(Paint.Style.FILL);
-        circlePaint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(1);
 
 
         float centerDirX = (float)Math.cos(Math.toRadians(angleTo));
@@ -99,7 +104,8 @@ public class Circle extends View {
         arrowPath.lineTo(arrowRightX, arrowRightY);
         arrowPath.lineTo(arrowHeadX, arrowHeadY);
 
-        canvas.drawPath(arrowPath, circlePaint);
+        canvas.drawPath(arrowPath, paint);
+
     }
     public float getAngleTo() {
         return angleTo;
