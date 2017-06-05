@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
+import com.gabm.tapandturn.sensors.PhysicalOrientationSensor2;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
@@ -32,6 +33,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     private Notification.Builder curNotificationBuilder = null;
 
     private PhysicalOrientationSensor physicalOrientationSensor;
+    private PhysicalOrientationSensor2 physicalOrientationSensor2;
     private ScreenRotatorOverlay screenRotatorOverlay;
     private OrientationButtonOverlay orientationButtonOverlay;
     private WindowManager windowManager;
@@ -63,10 +65,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
+                    physicalOrientationSensor2.disable();
                 }
             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
                 if (isActive) {
                     physicalOrientationSensor.enable();
+                    physicalOrientationSensor2.enable();
                 }
             }
         }
@@ -95,6 +99,9 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         physicalOrientationSensor = new PhysicalOrientationSensor(getApplicationContext(), SensorManager.SENSOR_DELAY_NORMAL, this);
         physicalOrientationSensor.enable();
+
+        physicalOrientationSensor2 = new PhysicalOrientationSensor2(getApplicationContext());
+        physicalOrientationSensor2.enable();
 
         // Initialize layout params
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
