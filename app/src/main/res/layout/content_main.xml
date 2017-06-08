@@ -104,6 +104,13 @@
             style="@style/LinearLayoutChild"
             />
         <Switch
+            android:id="@+id/restore_default_orientation_screen_off"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_default_orientation_screen_off_label"
+            style="@style/LinearLayoutChild"
+            />
+        <Switch
             android:id="@+id/start_on_boot_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

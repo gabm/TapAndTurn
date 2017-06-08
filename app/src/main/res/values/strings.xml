@@ -19,4 +19,5 @@
     <string name="configuration_title">Configuration</string>
     <string name="icon_size">Icon Size</string>
     <string name="icon_timeout">Icon Timeout</string>
+    <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>
 </resources>

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     private Switch autoStartBootSwtich;
     private Switch leftHandedModeSwitch;
     private Button requestPermissionButton;
+    private Switch restoreDefaultOnScreenOff;
 
     private SeekBar iconSizeSeekbar;
     private TextView iconSizeTextView;
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         leftHandedModeSwitch = (Switch)findViewById(R.id.left_handed_mode_switch);
         leftHandedModeSwitch.setOnCheckedChangeListener(this);
+
+        restoreDefaultOnScreenOff = (Switch)findViewById(R.id.restore_default_orientation_screen_off);
+        restoreDefaultOnScreenOff.setOnClickListener(this);
 
         requestPermissionButton = (Button)findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
@@ -133,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         appSettings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.START_ON_BOOT, autoStartBootSwtich.isChecked());
         appSettings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, leftHandedModeSwitch.isChecked());
+        appSettings.putBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, restoreDefaultOnScreenOff.isChecked());
         appSettings.finishEditMode();
     }
 
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false));
         autoStartBootSwtich.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false));
         leftHandedModeSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
+        restoreDefaultOnScreenOff.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, true));
     }
 
     @Override
@@ -163,6 +169,9 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         if (compoundButton == leftHandedModeSwitch)
             TapAndTurnApplication.settings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, b);
+
+        if (compoundButton == restoreDefaultOnScreenOff)
+            TapAndTurnApplication.settings.putBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, b);
     }
 
     private void setServiceState(boolean started) {
