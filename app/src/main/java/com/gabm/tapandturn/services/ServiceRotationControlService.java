@@ -16,9 +16,12 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
+import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
+import com.gabm.tapandturn.settings.SettingsKeys;
+import com.gabm.tapandturn.settings.SettingsManager;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
 import com.gabm.tapandturn.ui.OrientationButtonOverlay;
 
@@ -62,8 +65,11 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
-                    orientationButtonOverlay.hide();
-                    screenRotatorOverlay.forceOrientation(WindowManagerSensor.queryDefaultOrientation(windowManager, getResources().getConfiguration()));
+
+                    if (TapAndTurnApplication.settings.getBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, true)) {
+                        orientationButtonOverlay.hide();
+                        screenRotatorOverlay.forceOrientation(WindowManagerSensor.queryDefaultOrientation(windowManager, getResources().getConfiguration()));
+                    }
                 }
             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
                 if (isActive) {
