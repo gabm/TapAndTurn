@@ -65,11 +65,11 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
+                    orientationButtonOverlay.hide();
 
-                    if (TapAndTurnApplication.settings.getBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, true)) {
-                        orientationButtonOverlay.hide();
+                    if (TapAndTurnApplication.settings.getBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, true))
                         screenRotatorOverlay.forceOrientation(WindowManagerSensor.queryDefaultOrientation(windowManager, getResources().getConfiguration()));
-                    }
+
                 }
             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
                 if (isActive) {
