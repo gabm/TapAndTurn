@@ -6,7 +6,6 @@ package com.gabm.tapandturn.settings;
 
 // do not rename these, then users stored values get lost!
 public enum SettingsKeys {
-    SERVICESTATE,
     ICONSIZE,
     ICONTIMEOUT,
     USE_REVERSE_PORTRAIT,

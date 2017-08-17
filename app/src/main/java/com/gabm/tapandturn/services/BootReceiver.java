@@ -15,9 +15,8 @@ import com.gabm.tapandturn.settings.SettingsManager;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        final boolean serviceState = TapAndTurnApplication.settings.getBoolean(SettingsKeys.SERVICESTATE, false);
         final boolean autoStart = TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false);
-        if (autoStart && serviceState)
+        if (autoStart)
             ServiceRotationControlService.Start(context);
     }
 }

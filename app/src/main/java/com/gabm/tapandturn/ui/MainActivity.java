@@ -1,5 +1,7 @@
 package com.gabm.tapandturn.ui;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,7 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -116,14 +117,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         if (requestCode == REQUEST_CODE)
-            setPermissionGranted(hasPermissionToDrawOverApps());
-    }
-
-    private boolean hasPermissionToDrawOverApps() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            return Settings.canDrawOverlays(this);
-        else
-            return true;
+            setPermissionGranted(TapAndTurnApplication.hasPermissionToDrawOverApps(this));
     }
 
     @Override
@@ -133,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         final SettingsManager appSettings = TapAndTurnApplication.settings;
         appSettings.startEditMode();
-        appSettings.putBoolean(SettingsKeys.SERVICESTATE, serviceStateSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
         appSettings.putBoolean(SettingsKeys.START_ON_BOOT, autoStartBootSwtich.isChecked());
         appSettings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, leftHandedModeSwitch.isChecked());
@@ -145,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     protected void onStart() {
         Log.i("Main", "started");
         super.onStart();
-        setServiceState(TapAndTurnApplication.settings.getBoolean(SettingsKeys.SERVICESTATE, false));
-        setPermissionGranted(hasPermissionToDrawOverApps());
+        setServiceStateSwitch(isServiceRunning(ServiceRotationControlService.class));
+        setPermissionGranted(TapAndTurnApplication.hasPermissionToDrawOverApps(this));
 
         iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 62));
         iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 2000));
@@ -159,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         if (compoundButton == serviceStateSwitch)
-            setServiceState(b);
+            setServiceStateSwitch(applyNewServiceState(b));
 
         if (compoundButton == useReversePortraitSwitch)
             TapAndTurnApplication.settings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, b);
@@ -174,20 +167,47 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
             TapAndTurnApplication.settings.putBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, b);
     }
 
-    private void setServiceState(boolean started) {
-        if (started) {
-            if (hasPermissionToDrawOverApps()) {
-                ServiceRotationControlService.Start(this);
-                serviceStateSwitch.setChecked(true);
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.permission_missing, Toast.LENGTH_SHORT).show();
-                serviceStateSwitch.setChecked(false);
+    // borrowed from: https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
             }
-        } else {
-            ServiceRotationControlService.Stop(this);
-            serviceStateSwitch.setChecked(false);
+        }
+        return false;
+    }
+
+    private boolean applyNewServiceState(boolean newState) {
+        if (newState)
+            startupService();
+        else
+            shutdownService();
+
+        return isServiceRunning(ServiceRotationControlService.class);
+    }
+
+    private void startupService() {
+        if (isServiceRunning(ServiceRotationControlService.class))
+            return;
+
+        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(this)) {
+            Toast.makeText(getApplicationContext(), R.string.permission_missing, Toast.LENGTH_SHORT).show();
+            return;
         }
 
+        ServiceRotationControlService.Start(this);
+    }
+
+    private void shutdownService() {
+        if (!isServiceRunning(ServiceRotationControlService.class))
+            return;
+
+        ServiceRotationControlService.Stop(this);
+    }
+
+    private void setServiceStateSwitch(boolean started) {
+        serviceStateSwitch.setChecked(started);
     }
 
     private void setPermissionGranted(boolean granted) {
@@ -201,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
     @Override
     public void onClick(View view) {
-        if (!hasPermissionToDrawOverApps())
+        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(this))
             requestPermission();
     }
 

@@ -210,6 +210,12 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
     public void onOrientationChange(AbsoluteOrientation newOrientation) {
         Log.i("OrientationChange", newOrientation.toString());
 
+        // if we lost permission, then stop ourselves
+        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(getApplicationContext())) {
+            ServiceRotationControlService.Stop(getApplicationContext());
+            return;
+        }
+
 
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
