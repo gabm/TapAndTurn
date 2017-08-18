@@ -20,4 +20,5 @@
     <string name="icon_size">Icon Size</string>
     <string name="icon_timeout">Icon Timeout</string>
     <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>
+    <string name="permission_lost">The permission to draw overlays got lost, shutting down Tap \'n\' Turn!</string>
 </resources>

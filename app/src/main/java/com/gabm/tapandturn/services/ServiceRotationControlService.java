@@ -213,6 +213,8 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         // if we lost permission, then stop ourselves
         if (!TapAndTurnApplication.hasPermissionToDrawOverApps(getApplicationContext())) {
             ServiceRotationControlService.Stop(getApplicationContext());
+            Toast.makeText(this, R.string.permission_lost, Toast.LENGTH_LONG).show();
+
             return;
         }
 
