@@ -1,15 +1,24 @@
 package com.gabm.tapandturn.ui;
 
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +35,7 @@ import com.gabm.tapandturn.services.ServiceRotationControlService;
 import com.gabm.tapandturn.settings.SettingsKeys;
 import com.gabm.tapandturn.settings.SettingsManager;
 
-public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener, DialogInterface.OnClickListener {
     private Switch serviceStateSwitch;
     private Switch useReversePortraitSwitch;
     private Switch autoStartBootSwtich;
@@ -80,8 +89,16 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private Spanned renderHTML(int inputid, Object... formatArgs) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)  {
+            return Html.fromHtml(getString(inputid, formatArgs), Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(getString(inputid,formatArgs));
+        }
     }
 
     @Override
@@ -92,7 +109,23 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_info) {
+            LayoutInflater factory = LayoutInflater.from( this );
+
+            View titleView = factory.inflate(R.layout.info_screen_header, null);
+
+            AlertDialog.Builder adb = new AlertDialog.Builder( this )
+                    .setCustomTitle(titleView)
+                    .setPositiveButton( "Ok", this );
+            View tvs = factory.inflate( R.layout.info_screen, null );
+            if( tvs != null ) {
+                adb.setView( tvs );
+                TextView tv = (TextView)tvs.findViewById(R.id.text_view);
+                tv.setText(renderHTML(R.string.about_text, getPackageVersion()));
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
+            } else
+                adb.setMessage( "" );
+            adb.create().show();
             return true;
         }
 
@@ -244,5 +277,22 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+
+    }
+
+
+    private String getPackageVersion() {
+        PackageInfo pi = null;
+        try {
+            pi = getPackageManager().getPackageInfo( getPackageName(), 0 );
+            return pi.versionName;
+        } catch( PackageManager.NameNotFoundException e ) {
+            Log.e( "d", "Package name not found", e );
+            return "";
+        }
     }
 }

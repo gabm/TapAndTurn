@@ -21,4 +21,22 @@
     <string name="icon_timeout">Icon Timeout</string>
     <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>
     <string name="permission_lost">The permission to draw overlays got lost, shutting down Tap \'n\' Turn!</string>
+    <string name="about_text"><![CDATA[
+<h1>Tap\'n\'Turn v%1$s</h1>
+<h4>A small and handy screen orientation utility.</h4>
+
+<p>Thank you for using  <a href="https://gabm.github.io/TapAndTurn">Tap\'n\'Turn! This app is a community project and has been originally created by Matthias Gabriel. </a></p>
+
+<p>If you want to participate in the development of Tap\'n\'Turn by submitting code, artwork, translations or reporting bugs, then please use our project page on <a href="https://github.com/gabm/TapAndTurn">GitHub</a>. Further we have a <a href="https://riot.im">riot.im</a> channel under #TapAndTurn:matrix.org open for discussion.</p>
+
+<h2>License</h2>
+<p>The source code of Tap\'n\'Turn is released to public domain under the terms of the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a> or newer.</p>
+
+<p>The trademarks \"Tap\'n\'Turn\" as well as similar identifiers like \"TapAndTurn\", \"Tap and Turn\" are owned by Matthias Gabriel. All rights are reserved. The preferred written from is \"Tap\'n\'Turn\". These trademarks are used to refer to the source code, the binary releases as well as the community (herafter: "the Project"). You are granted the right to use these trademarks to refer to the Project in discussions, documentations and written publications. You may not use these trademarks for binary releases without permit by the original author. If you want to distribute derived work, you have to use a different name.</p>
+
+
+<h2>Contact</h2>
+You can contact me via mail gabmtuc <at> gmail <dot> com or at <a href="https://riot.im">riot.im</a> under @gabm:matrix.org.
+
+]]></string>
 </resources>
