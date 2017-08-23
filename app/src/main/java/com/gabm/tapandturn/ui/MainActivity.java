@@ -1,18 +1,19 @@
 package com.gabm.tapandturn.ui;
 
 import android.app.ActivityManager;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -22,9 +23,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,22 +37,11 @@ import android.widget.Toast;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.services.ServiceRotationControlService;
-import com.gabm.tapandturn.settings.SettingsKeys;
 import com.gabm.tapandturn.settings.SettingsManager;
 
-public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener, SeekBar.OnSeekBarChangeListener, DialogInterface.OnClickListener {
+public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
     private Switch serviceStateSwitch;
-    private Switch useReversePortraitSwitch;
-    private Switch autoStartBootSwtich;
-    private Switch leftHandedModeSwitch;
     private Button requestPermissionButton;
-    private Switch restoreDefaultOnScreenOff;
-
-    private SeekBar iconSizeSeekbar;
-    private TextView iconSizeTextView;
-
-    private SeekBar iconTimeoutSeekbar;
-    private TextView iconTimeoutTextView;
 
 
     @Override
@@ -56,34 +50,64 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        iconSizeSeekbar = (SeekBar)findViewById(R.id.icon_size_seekbar);
-        iconSizeTextView = (TextView)findViewById(R.id.icon_size_text);
-
-        iconTimeoutSeekbar = (SeekBar)findViewById(R.id.icon_timeout_seekbar);
-        iconTimeoutTextView = (TextView)findViewById(R.id.icon_timeout_text);
-
         setSupportActionBar(toolbar);
 
-        serviceStateSwitch = (Switch)findViewById(R.id.service_state_switch);
+        serviceStateSwitch = (Switch) findViewById(R.id.service_state_switch);
         serviceStateSwitch.setOnCheckedChangeListener(this);
 
-        useReversePortraitSwitch = (Switch)findViewById(R.id.use_reverse_portrait_switch);
-        useReversePortraitSwitch.setOnCheckedChangeListener(this);
 
-        autoStartBootSwtich = (Switch)findViewById(R.id.start_on_boot_switch);
-        autoStartBootSwtich.setOnCheckedChangeListener(this);
-
-        leftHandedModeSwitch = (Switch)findViewById(R.id.left_handed_mode_switch);
-        leftHandedModeSwitch.setOnCheckedChangeListener(this);
-
-        restoreDefaultOnScreenOff = (Switch)findViewById(R.id.restore_default_orientation_screen_off);
-        restoreDefaultOnScreenOff.setOnClickListener(this);
-
-        requestPermissionButton = (Button)findViewById(R.id.request_button);
+        requestPermissionButton = (Button) findViewById(R.id.request_button);
         requestPermissionButton.setOnClickListener(this);
 
-        iconSizeSeekbar.setOnSeekBarChangeListener(this);
-        iconTimeoutSeekbar.setOnSeekBarChangeListener(this);
+        final ScrollView scrollview = ((ScrollView) findViewById(R.id.scrollview_content_main));
+        scrollview.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollview.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
+    }
+
+    public static class MyPreferenceFragment extends PreferenceFragment
+    {
+        @Override
+        public void onCreate(final Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesName(SettingsManager.SettingsName);
+            addPreferencesFromResource(R.xml.preferences);
+        }
+
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+
+            if (getView() != null) {
+
+                ListView listView = (ListView) getView().findViewById(android.R.id.list);
+                Adapter adapter = listView.getAdapter();
+
+                if (adapter != null) {
+                    int height = 0;
+                    //int height = listView.getPaddingTop() + listView.getPaddingBottom();
+
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        View item = adapter.getView(i, null, listView);
+
+                        item.measure(0, 0);
+                        height += item.getMeasuredHeight();
+                    }
+
+                    LinearLayout frame = (LinearLayout) getActivity().findViewById(R.id.preference_fragment); //Modify this for your fragment
+
+                    ViewGroup.LayoutParams param = frame.getLayoutParams();
+                    param.height = height + (listView.getDividerHeight() * adapter.getCount());
+                    frame.setLayoutParams(param);
+                }
+            }
+
+        }
     }
 
     @Override
@@ -116,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
             AlertDialog.Builder adb = new AlertDialog.Builder( this )
                     .setCustomTitle(titleView)
-                    .setPositiveButton( "Ok", this );
+                    .setPositiveButton( "Ok", null );
             View tvs = factory.inflate( R.layout.info_screen, null );
             if( tvs != null ) {
                 adb.setView( tvs );
@@ -157,47 +181,22 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     protected void onStop() {
         Log.i("Main", "stopped");
         super.onStop();
-
-        final SettingsManager appSettings = TapAndTurnApplication.settings;
-        appSettings.startEditMode();
-        appSettings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, useReversePortraitSwitch.isChecked());
-        appSettings.putBoolean(SettingsKeys.START_ON_BOOT, autoStartBootSwtich.isChecked());
-        appSettings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, leftHandedModeSwitch.isChecked());
-        appSettings.putBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, restoreDefaultOnScreenOff.isChecked());
-        appSettings.finishEditMode();
     }
 
     @Override
     protected void onStart() {
         Log.i("Main", "started");
         super.onStart();
+
+
         setServiceStateSwitch(isServiceRunning(ServiceRotationControlService.class));
         setPermissionGranted(TapAndTurnApplication.hasPermissionToDrawOverApps(this));
-
-        iconSizeSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONSIZE, 62));
-        iconTimeoutSeekbar.setProgress(TapAndTurnApplication.settings.getInt(SettingsKeys.ICONTIMEOUT, 2000));
-        useReversePortraitSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, false));
-        autoStartBootSwtich.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.START_ON_BOOT, false));
-        leftHandedModeSwitch.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.LEFT_HANDED_MODE, false));
-        restoreDefaultOnScreenOff.setChecked(TapAndTurnApplication.settings.getBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, true));
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         if (compoundButton == serviceStateSwitch)
             setServiceStateSwitch(applyNewServiceState(b));
-
-        if (compoundButton == useReversePortraitSwitch)
-            TapAndTurnApplication.settings.putBoolean(SettingsKeys.USE_REVERSE_PORTRAIT, b);
-
-        if (compoundButton == autoStartBootSwtich)
-            TapAndTurnApplication.settings.putBoolean(SettingsKeys.START_ON_BOOT, b);
-
-        if (compoundButton == leftHandedModeSwitch)
-            TapAndTurnApplication.settings.putBoolean(SettingsKeys.LEFT_HANDED_MODE, b);
-
-        if (compoundButton == restoreDefaultOnScreenOff)
-            TapAndTurnApplication.settings.putBoolean(SettingsKeys.RESTORE_DEFAULT_ON_SCREEN_OFF, b);
     }
 
     // borrowed from: https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
@@ -256,32 +255,6 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     public void onClick(View view) {
         if (!TapAndTurnApplication.hasPermissionToDrawOverApps(this))
             requestPermission();
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if (seekBar == iconSizeSeekbar) {
-            iconSizeTextView.setText("Icon Size: " + seekBar.getProgress() + "dp");
-            TapAndTurnApplication.settings.putInt(SettingsKeys.ICONSIZE, seekBar.getProgress());
-        } else if  (seekBar == iconTimeoutSeekbar) {
-            iconTimeoutTextView.setText("Icon Timeout: " + seekBar.getProgress() + "ms");
-            TapAndTurnApplication.settings.putInt(SettingsKeys.ICONTIMEOUT, seekBar.getProgress());
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onClick(DialogInterface dialogInterface, int i) {
-
     }
 
 

@@ -70,6 +70,9 @@ public class OrientationButtonOverlay {
 
         circle.setAngleFrom(0);
         circle.setAngleTo(0);
+        circle.setColors(
+                TapAndTurnApplication.settings.getInt(SettingsKeys.ICONFOREGROUNDCOLOR, 0x000000),
+                TapAndTurnApplication.settings.getInt(SettingsKeys.ICONBACKGROUNDCOLOR, 0x000000));
         curWindowManager.addView(parentLayout, layoutParams);
 
         timeoutHandler.removeCallbacks(hideButtonRunnable);

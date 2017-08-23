@@ -23,11 +23,11 @@ public class Circle extends View {
     private static final int STROKE_WIDTH = 10;
     private float angleFrom;
     private float angleTo;
+    private int foregroundColor = Color.parseColor("#FFF26419");
+    private int backgroundColor = Color.parseColor("#44000000");
 
     public Circle(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-
 
         //Initial Angle (optional, it can be zero)
         angleFrom = 0;
@@ -62,13 +62,13 @@ public class Circle extends View {
         setLayerType(LAYER_TYPE_SOFTWARE, paint);
 
         // draw background
-        paint.setColor(Color.parseColor("#44000000"));
+        paint.setColor(backgroundColor);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle(boxCenter, boxCenter, boxCenter-12, paint);
 
         // draw oval
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(getResources().getColor(R.color.colorAccent));
+        paint.setColor(foregroundColor);
         Path circlePath = new Path();
         final RectF arrowOval = new RectF(outerPadding, outerPadding, outerBoxLength-outerPadding, outerBoxLength-outerPadding);
         circlePath.addArc(arrowOval, angleFrom,angleTo-angleFrom);
@@ -113,6 +113,11 @@ public class Circle extends View {
 
     public void setAngleTo(float angle) {
         this.angleTo = angle;
+    }
+
+    public void setColors(int foregroundColor, int backgroundColor) {
+        this.foregroundColor = foregroundColor;
+        this.backgroundColor = backgroundColor;
     }
 
     public void setAngleFrom(float angle) {

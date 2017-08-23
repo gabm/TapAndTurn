@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class SettingsManager {
 
-    private static final String SettingsName = "ScreenRotationControl";
+    public static final String SettingsName = "ScreenRotationControl";
 
     private final SharedPreferences preferences;
     private SharedPreferences.Editor editor=null;
@@ -39,6 +39,10 @@ public class SettingsManager {
         return preferences.getBoolean(key.name(), defaultValue);
     }
 
+    public String getString(SettingsKeys key, String defaultValue) {
+        return preferences.getString(key.name(), defaultValue);
+    }
+
     public int getInt(SettingsKeys key, int defaultValue) {
         return preferences.getInt(key.name(), defaultValue);
     }
@@ -61,5 +65,13 @@ public class SettingsManager {
         } else {
             editor.putInt(key.name(), value);
         }
+    }
+
+    public void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        preferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        preferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

@@ -17,6 +17,7 @@
     <string name="introduction">Tap \'n\' Turn should be run with auto-rotation enabled. It will enforce the user selected orientation by drawing an invisible overlay over the screen. That is why it needs that permission. You can temporarily enable/disable the screen overlay by touching the notification.</string>
     <string name="introduction_title">Introduction</string>
     <string name="configuration_title">Configuration</string>
+    <string name="service_setup_title">Service Setup</string>
     <string name="icon_size">Icon Size</string>
     <string name="icon_timeout">Icon Timeout</string>
     <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>

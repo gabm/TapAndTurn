@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:key="ICONSIZE"
+        android:title="@string/icon_size"
+        android:enabled="true"
+        android:defaultValue="64"
+
+        app:msbp_minValue="10"
+        app:msbp_maxValue="100"
+        app:msbp_interval="1"
+        app:msbp_measurementUnit="dp"
+        app:msbp_dialogEnabled="false" />
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:key="ICONTIMEOUT"
+        android:title="@string/icon_timeout"
+        android:enabled="true"
+        android:defaultValue="2000"
+
+        app:msbp_minValue="500"
+        app:msbp_maxValue="8000"
+        app:msbp_interval="500"
+        app:msbp_measurementUnit="ms"
+        app:msbp_dialogEnabled="false" />
+    <com.jaredrummler.android.colorpicker.ColorPreference
+        android:defaultValue="0xFFF26419"
+        android:key="ICONFOREGROUNDCOLOR"
+        android:summary=""
+        android:title="Color of the arrow"
+        app:cpv_showColorShades="false"
+        app:cpv_previewSize="large"
+        app:cpv_showAlphaSlider="true"
+        app:cpv_dialogType="custom" />
+    <com.jaredrummler.android.colorpicker.ColorPreference
+        android:defaultValue="0x44000000"
+        android:key="ICONBACKGROUNDCOLOR"
+        android:summary=""
+        android:title="Background color of the icon"
+        app:cpv_showColorShades="false"
+        app:cpv_previewSize="large"
+        app:cpv_showAlphaSlider="true"
+        app:cpv_dialogType="custom" />
+    <SwitchPreference
+        android:title="@string/use_reverse_portrait_label"
+        android:defaultValue="false"
+        android:summary="Use reverse portrait orientation"
+        android:key="USE_REVERSE_PORTRAIT"
+        />
+    <SwitchPreference
+        android:title="@string/left_handed_mode"
+        android:defaultValue="false"
+        android:summary="Enable left hand mode"
+        android:key="LEFT_HANDED_MODE"
+        />
+    <SwitchPreference
+        android:title="@string/restore_default_orientation_screen_off_label"
+        android:defaultValue="true"
+        android:summary="Restore the default orientation when the screen is switched off"
+        android:key="RESTORE_DEFAULT_ON_SCREEN_OFF"
+        />
+    <SwitchPreference
+        android:title="@string/start_on_boot_label"
+        android:defaultValue="false"
+        android:summary="Automatically start Tap'n'Turn on boot"
+        android:key="START_ON_BOOT" />
+</PreferenceScreen>

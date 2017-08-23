@@ -6,14 +6,14 @@
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gabm.tapandturn.ui.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:id="@+id/scrollview_content_main"
+    >
     <LinearLayout
         android:id="@+id/content_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
@@ -32,11 +32,10 @@
             />
 
         <TextView
-            android:id="@+id/textView"
             style="@style/LinearLayoutChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/configuration_title"
+            android:text="@string/service_setup_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch" />
 
         <Switch
@@ -55,67 +54,19 @@
             />
 
         <TextView
-            android:text="@string/icon_size"
+            style="@style/LinearLayoutChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
-            android:id="@+id/icon_size_text"
-            style="@style/LinearLayoutChild"
-            />
+            android:text="@string/configuration_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch" />
 
-        <SeekBar
+        <fragment
+            android:id="@+id/preference_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/icon_size_seekbar"
-            android:max="100"
-            android:progress="20"
-            style="@style/LinearLayoutChild"
-            />
+            class = "com.gabm.tapandturn.ui.MainActivity$MyPreferenceFragment"
+            >
 
-        <TextView
-            android:text="@string/icon_timeout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
-            android:id="@+id/icon_timeout_text"
-            style="@style/LinearLayoutChild"
-            />
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/icon_timeout_seekbar"
-            android:max="8000"
-            android:progress="500"
-            style="@style/LinearLayoutChild"
-            />
-        <Switch
-            android:id="@+id/use_reverse_portrait_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/use_reverse_portrait_label"
-            style="@style/LinearLayoutChild"
-            />
-        <Switch
-            android:id="@+id/left_handed_mode_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/left_handed_mode"
-            style="@style/LinearLayoutChild"
-            />
-        <Switch
-            android:id="@+id/restore_default_orientation_screen_off"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/restore_default_orientation_screen_off_label"
-            style="@style/LinearLayoutChild"
-            />
-        <Switch
-            android:id="@+id/start_on_boot_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/start_on_boot_label"
-            style="@style/LinearLayoutChild"
-            />
+        </fragment>
     </LinearLayout>
 </ScrollView>
