@@ -220,10 +220,10 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
-                orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
+            orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
 
-                // if the new orientation is different from what the user requested
-                handlerScreenOrientation = newOrientation;
+            // if the new orientation is different from what the user requested
+            handlerScreenOrientation = newOrientation;
 
         } else {
             // if the new orientation is the same as what the user already requested
