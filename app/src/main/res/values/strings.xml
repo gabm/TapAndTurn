@@ -21,7 +21,7 @@
     <string name="icon_size">Icon Size</string>
     <string name="icon_timeout">Icon Timeout</string>
     <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>
-    <string name="permission_lost">The permission to draw overlays got lost, shutting down Tap \'n\' Turn!</string>
+    <string name="permission_lost">Tap \'n\' Turn disabled: permission to draw overlays got lost!</string>
     <string name="about_text"><![CDATA[
 <h1>Tap\'n\'Turn v%1$s</h1>
 <h4>A small and handy screen orientation utility.</h4>

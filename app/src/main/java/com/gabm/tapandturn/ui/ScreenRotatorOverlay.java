@@ -56,6 +56,8 @@ public class ScreenRotatorOverlay {
 
             curWindowManager.removeView(dummyLayout);
         }
+
+        currentlySetScreenOrientation = new AbsoluteOrientation(AbsoluteOrientation.Enum.Unknown);
     }
 
     public boolean isActive() {

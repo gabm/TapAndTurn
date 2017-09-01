@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
 import com.gabm.tapandturn.TapAndTurnApplication;
+import com.gabm.tapandturn.sensors.OverlayPermissionSensor;
 import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
@@ -29,7 +30,7 @@ import com.gabm.tapandturn.ui.OrientationButtonOverlay;
  * Created by gabm on 30.10.16.
  */
 
-public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener{
+public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener, OverlayPermissionSensor.OverlayPermissionListener {
     private NotificationManager mNM;
     private Notification.Builder curNotificationBuilder = null;
 
@@ -125,6 +126,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         screenRotatorOverlay.removeView();
         orientationButtonOverlay.hide();
         physicalOrientationSensor.disable();
+        OverlayPermissionSensor.getInstance().removeListener(this);
 
         curNotificationBuilder
                 .setContentTitle(getText(R.string.notification_service_not_active))
@@ -140,6 +142,7 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
         screenRotatorOverlay.forceOrientation(WindowManagerSensor.query(windowManager));
         orientationButtonOverlay.hide();
         physicalOrientationSensor.enable();
+        OverlayPermissionSensor.getInstance().addListener(this);
 
         curNotificationBuilder
                 .setContentTitle(getText(R.string.notification_service_active))
@@ -208,29 +211,36 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
     @Override
     public void onOrientationChange(AbsoluteOrientation newOrientation) {
-        Log.i("OrientationChange", newOrientation.toString());
+        Log.i("onOrientationChange", "old: " + screenRotatorOverlay.getCurrentlySetScreenOrientation().toString() + " new: " + newOrientation.toString());
 
-        // if we lost permission, then stop ourselves
-        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(getApplicationContext())) {
-            ServiceRotationControlService.Stop(getApplicationContext());
+        if (!OverlayPermissionSensor.getInstance().query(getApplicationContext())) {
             Toast.makeText(this, R.string.permission_lost, Toast.LENGTH_LONG).show();
-
             return;
         }
 
-
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
-            // if the new orientation is different from what the user requested
-            handlerScreenOrientation = newOrientation;
-            orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
+                orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
+
+                // if the new orientation is different from what the user requested
+                handlerScreenOrientation = newOrientation;
 
         } else {
-
             // if the new orientation is the same as what the user already requested
             if (orientationButtonOverlay.isActive())
                 orientationButtonOverlay.hide();
+
         }
+    }
+
+    @Override
+    public void onOverlayPermissionGranted() {
+        screenRotatorOverlay.forceOrientation(WindowManagerSensor.query(windowManager));
+    }
+
+    @Override
+    public void onOverlayPermissionRemoved() {
+        screenRotatorOverlay.removeView();
     }
 
 

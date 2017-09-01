@@ -95,7 +95,7 @@ public class OrientationButtonOverlay {
     }
 
     private AlignmentInfo getButtonAlignmentLeftHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
-        Log.i("OrientationChange:", "right handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
+        Log.i("OverlayButton", "left handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
         AlignmentInfo alignmentInfo = new AlignmentInfo();
         alignmentInfo.rotation = 0;
@@ -183,7 +183,7 @@ public class OrientationButtonOverlay {
     }
 
     private AlignmentInfo getButtonAlignmentRightHanded(AbsoluteOrientation oldScreenOrientation, AbsoluteOrientation newScreenOrientation) {
-        Log.i("OrientationChange:", "left handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
+        Log.i("OverlayButton", "right handed, old: " + oldScreenOrientation + " new: " + newScreenOrientation);
 
         AlignmentInfo alignmentInfo = new AlignmentInfo();
         alignmentInfo.rotation = 0;

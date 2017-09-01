@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.TapAndTurnApplication;
+import com.gabm.tapandturn.sensors.OverlayPermissionSensor;
 import com.gabm.tapandturn.services.ServiceRotationControlService;
 import com.gabm.tapandturn.settings.SettingsManager;
 
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     @Override
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         if (requestCode == REQUEST_CODE)
-            setPermissionGranted(TapAndTurnApplication.hasPermissionToDrawOverApps(this));
+            setPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
     }
 
     @Override
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
 
         setServiceStateSwitch(isServiceRunning(ServiceRotationControlService.class));
-        setPermissionGranted(TapAndTurnApplication.hasPermissionToDrawOverApps(this));
+        setPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
     }
 
     @Override
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         if (isServiceRunning(ServiceRotationControlService.class))
             return;
 
-        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(this)) {
+        if (!OverlayPermissionSensor.getInstance().query(this)) {
             Toast.makeText(getApplicationContext(), R.string.permission_missing, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -253,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
     @Override
     public void onClick(View view) {
-        if (!TapAndTurnApplication.hasPermissionToDrawOverApps(this))
+        if (!OverlayPermissionSensor.getInstance().query(this))
             requestPermission();
     }
 

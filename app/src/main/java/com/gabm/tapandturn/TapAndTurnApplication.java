@@ -19,13 +19,4 @@ public class TapAndTurnApplication extends Application {
         super.onCreate();
         settings = new SettingsManager(getApplicationContext());
     }
-
-
-    public static boolean hasPermissionToDrawOverApps(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            return Settings.canDrawOverlays(context);
-        else
-            return true;
-    }
-
 }
