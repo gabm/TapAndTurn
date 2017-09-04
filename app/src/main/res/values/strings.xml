@@ -36,6 +36,10 @@
 
 <p>The trademarks \"Tap\'n\'Turn\" as well as similar identifiers like \"TapAndTurn\", \"Tap and Turn\" are owned by Matthias Gabriel. All rights are reserved. The preferred written from is \"Tap\'n\'Turn\". These trademarks are used to refer to the source code, the binary releases as well as the community (herafter: "the Project"). You are granted the right to use these trademarks to refer to the Project in discussions, documentations and written publications. You may not use these trademarks for binary releases without permit by the original author. If you want to distribute derived work, you have to use a different name.</p>
 
+<h2>Libraries</h2>
+
+<p>\"Tap\'n\'Turn\" makes great use of the <a href="https://github.com/jaredrummler/ColorPicker">Color Picker</a> library, which is developed and released by Jared Rummler
+ and his contributors. Further TnT is using <a href="https://github.com/MrBIMC/MaterialSeekBarPreference">MaterialSeekBarPreference</a> by Pavel Sikun and contributors. Both libraries are released under Apache License 2.0.
 
 <h2>Contact</h2>
 You can contact me via mail gabmtuc <at> gmail <dot> com or at <a href="https://riot.im">riot.im</a> under @gabm:matrix.org.
