@@ -60,6 +60,11 @@
         android:key="RESTORE_DEFAULT_ON_SCREEN_OFF"
         />
     <SwitchPreference
+        android:title="@string/auto_return_default"
+        android:defaultValue="false"
+        android:summary="Return to default orientation without displaying the TnT icon"
+        android:key="AUTO_RETURN_TO_DEFAULT" />
+    <SwitchPreference
         android:title="@string/start_on_boot_label"
         android:defaultValue="false"
         android:summary="Automatically start Tap'n'Turn on boot"

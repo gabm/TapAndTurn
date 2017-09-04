@@ -22,11 +22,12 @@
     <string name="icon_timeout">Icon Timeout</string>
     <string name="restore_default_orientation_screen_off_label" >Restore default orientation on screen off</string>
     <string name="permission_lost">Tap \'n\' Turn disabled: permission to draw overlays got lost!</string>
+    <string name="auto_return_default">Automatically return to default orientation</string>
     <string name="about_text"><![CDATA[
 <h1>Tap\'n\'Turn v%1$s</h1>
 <h4>A small and handy screen orientation utility.</h4>
 
-<p>Thank you for using  <a href="https://gabm.github.io/TapAndTurn">Tap\'n\'Turn! This app is a community project and has been originally created by Matthias Gabriel. </a></p>
+<p>Thank you for using  <a href="https://gabm.github.io/TapAndTurn">Tap\'n\'Turn!</a> This app is a community project and has been originally created by Matthias Gabriel.</p>
 
 <p>If you want to participate in the development of Tap\'n\'Turn by submitting code, artwork, translations or reporting bugs, then please use our project page on <a href="https://github.com/gabm/TapAndTurn">GitHub</a>. Further we have a <a href="https://riot.im">riot.im</a> channel under #TapAndTurn:matrix.org open for discussion.</p>
 

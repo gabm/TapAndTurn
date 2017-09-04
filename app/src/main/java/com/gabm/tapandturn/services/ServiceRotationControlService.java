@@ -218,6 +218,13 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
             return;
         }
 
+        if (TapAndTurnApplication.settings.getBoolean(SettingsKeys.AUTO_RETURN_TO_DEFAULT, false) && newOrientation.equals(WindowManagerSensor.queryDefaultOrientation(windowManager,getResources().getConfiguration()))) {
+            if (orientationButtonOverlay.isActive())
+                orientationButtonOverlay.hide();
+            screenRotatorOverlay.forceOrientation(newOrientation);
+            return;
+        }
+
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
             orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
