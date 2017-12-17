@@ -10,10 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -35,9 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.R;
-import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.sensors.OverlayPermissionSensor;
-import com.gabm.tapandturn.services.ServiceRotationControlService;
+import com.gabm.tapandturn.services.RotationControlService;
 import com.gabm.tapandturn.settings.SettingsManager;
 
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
@@ -190,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         super.onStart();
 
 
-        setServiceStateSwitch(isServiceRunning(ServiceRotationControlService.class));
+        setServiceStateSwitch(isServiceRunning(RotationControlService.class));
         setPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
     }
 
@@ -217,11 +214,11 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         else
             shutdownService();
 
-        return isServiceRunning(ServiceRotationControlService.class);
+        return isServiceRunning(RotationControlService.class);
     }
 
     private void startupService() {
-        if (isServiceRunning(ServiceRotationControlService.class))
+        if (isServiceRunning(RotationControlService.class))
             return;
 
         if (!OverlayPermissionSensor.getInstance().query(this)) {
@@ -229,14 +226,14 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
             return;
         }
 
-        ServiceRotationControlService.Start(this);
+        RotationControlService.Start(this);
     }
 
     private void shutdownService() {
-        if (!isServiceRunning(ServiceRotationControlService.class))
+        if (!isServiceRunning(RotationControlService.class))
             return;
 
-        ServiceRotationControlService.Stop(this);
+        RotationControlService.Stop(this);
     }
 
     private void setServiceStateSwitch(boolean started) {

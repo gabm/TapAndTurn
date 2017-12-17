@@ -22,7 +22,6 @@ import com.gabm.tapandturn.sensors.PhysicalOrientationSensor;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 import com.gabm.tapandturn.R;
 import com.gabm.tapandturn.settings.SettingsKeys;
-import com.gabm.tapandturn.settings.SettingsManager;
 import com.gabm.tapandturn.ui.ScreenRotatorOverlay;
 import com.gabm.tapandturn.ui.OrientationButtonOverlay;
 
@@ -30,7 +29,7 @@ import com.gabm.tapandturn.ui.OrientationButtonOverlay;
  * Created by gabm on 30.10.16.
  */
 
-public class ServiceRotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener, OverlayPermissionSensor.OverlayPermissionListener {
+public class RotationControlService extends Service implements PhysicalOrientationSensor.OrientationListener, View.OnClickListener, OverlayPermissionSensor.OverlayPermissionListener {
     private NotificationManager mNM;
     private Notification.Builder curNotificationBuilder = null;
 
@@ -252,17 +251,17 @@ public class ServiceRotationControlService extends Service implements PhysicalOr
 
 
     public class ServiceRotationControlBinder extends Binder {
-        ServiceRotationControlService getService() {
-            return ServiceRotationControlService.this;
+        RotationControlService getService() {
+            return RotationControlService.this;
         }
     }
 
     public static void Start(Context context) {
-        context.startService(new Intent(context, ServiceRotationControlService.class));
+        context.startService(new Intent(context, RotationControlService.class));
     }
 
     public static void Stop(Context context) {
-        context.stopService(new Intent(context, ServiceRotationControlService.class));
+        context.stopService(new Intent(context, RotationControlService.class));
     }
 
     // This is the object that receives interactions from clients.  See
