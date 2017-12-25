@@ -1,5 +1,6 @@
 package com.gabm.tapandturn.services;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -182,6 +184,15 @@ public class RotationControlService extends Service implements PhysicalOrientati
         return mBinder;
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        //create a intent that you want to start again..
+        Intent intent = new Intent(getApplicationContext(), RotationControlService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + 500, pendingIntent);
+        super.onTaskRemoved(rootIntent);
+    }
 
     /**
      * Show a notification while this service is running.
