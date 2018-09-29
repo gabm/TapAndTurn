@@ -1,6 +1,7 @@
 package com.gabm.tapandturn.services;
 
 import android.app.AlarmManager;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -64,6 +65,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
     private BroadcastReceiver screenOffBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            KeyguardManager kgs = context.getSystemService(Context.KEYGUARD_SERVICE);
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
@@ -73,7 +75,9 @@ public class RotationControlService extends Service implements PhysicalOrientati
                         screenRotatorOverlay.forceOrientation(WindowManagerSensor.queryDefaultOrientation(windowManager, getResources().getConfiguration()));
 
                 }
-            } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON) && !kgm.isDeviceLocked() || 
+                       intent.getAction().equals(Intent.ACTION_USER_PRESENT))
+            {
                 if (isActive) {
                     physicalOrientationSensor.enable();
                 }
