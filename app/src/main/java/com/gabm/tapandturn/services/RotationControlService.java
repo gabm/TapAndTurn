@@ -65,7 +65,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
     private BroadcastReceiver screenOffBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            KeyguardManager kgs = context.getSystemService(Context.KEYGUARD_SERVICE);
+            KeyguardManager kgm = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 if (isActive) {
                     physicalOrientationSensor.disable();
@@ -75,7 +75,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
                         screenRotatorOverlay.forceOrientation(WindowManagerSensor.queryDefaultOrientation(windowManager, getResources().getConfiguration()));
 
                 }
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON) && !kgm.isDeviceLocked() || 
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON) && !kgm.isKeyguardLocked() ||
                        intent.getAction().equals(Intent.ACTION_USER_PRESENT))
             {
                 if (isActive) {
@@ -92,6 +92,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
 
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_USER_PRESENT);
 
         registerReceiver(screenOffBroadcastReceiver, filter);
