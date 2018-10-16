@@ -1,5 +1,6 @@
 package com.gabm.tapandturn.ui;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
                 scrollview.fullScroll(ScrollView.FOCUS_UP);
             }
         });
+
+
+        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        requestPermissions(permissions, 1234);
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment
