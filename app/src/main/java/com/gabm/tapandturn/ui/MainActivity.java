@@ -204,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     }
     @Override
     protected void onStop() {
-        Log.i("Main", "stopped");
+        TapAndTurnApplication.log(Log.INFO, "MainActivity", "stopped");
         super.onStop();
     }
 
     @Override
     protected void onStart() {
-        Log.i("Main", "started");
+        TapAndTurnApplication.log(Log.INFO, "MainActivity", "started");
         super.onStart();
 
 
@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
             pi = getPackageManager().getPackageInfo( getPackageName(), 0 );
             return pi.versionName;
         } catch( PackageManager.NameNotFoundException e ) {
-            Log.e( "d", "Package name not found", e );
+            TapAndTurnApplication.log(Log.DEBUG, "MainActivity", "Package name not found");
             return "";
         }
     }

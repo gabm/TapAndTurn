@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.gabm.tapandturn.AbsoluteOrientation;
+import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.sensors.WindowManagerSensor;
 
 /**
@@ -35,7 +36,7 @@ public class ScreenRotatorOverlay {
     public void forceOrientation(AbsoluteOrientation orientation) {
         removeView();
 
-        Log.i("Overlay", "Adding for " + orientation.toString());
+        TapAndTurnApplication.log(Log.INFO, "ScreenRotatorOverlay", "Adding for " + orientation.toString());
 
         WindowManager.LayoutParams dummyParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
         dummyParams.screenOrientation = orientation.toActivityInfoOrientation();
@@ -52,7 +53,7 @@ public class ScreenRotatorOverlay {
     // Immidiately removes the current view
     public void removeView() {
         if (isActive()) {
-            Log.i("Overlay", "Removing overlay");
+            TapAndTurnApplication.log(Log.INFO, "ScreenRotatorOverlay", "removing overlay");
 
             curWindowManager.removeView(dummyLayout);
         }
