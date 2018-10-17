@@ -53,6 +53,13 @@
             style="@style/LinearLayoutChild"
             />
 
+        <Switch
+            android:id="@+id/logging_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logging"
+            style="@style/LinearLayoutChild"
+            />
         <TextView
             style="@style/LinearLayoutChild"
             android:layout_width="match_parent"
@@ -69,12 +76,5 @@
 
         </fragment>
 
-        <Switch
-            android:id="@+id/logging_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/logging"
-            style="@style/LinearLayoutChild"
-            />
     </LinearLayout>
 </ScrollView>
