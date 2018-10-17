@@ -192,13 +192,16 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         if (requestCode == REQUEST_OVERLAY_CODE)
             setOverlayPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
-        else if (requestCode == REQUEST_WRITE_PERMISSION) {
-            TapAndTurnApplication.setLoggingEnabled(hasWritePermission());
-            setServiceStateSwitch(hasWritePermission());
-        }
     }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_WRITE_PERMISSION) {
+            TapAndTurnApplication.setLoggingEnabled(hasWritePermission());
+            setLoggingStateSwitch(hasWritePermission());
+        }
+    }
     @Override
     protected void onStop() {
         Log.i("Main", "stopped");
