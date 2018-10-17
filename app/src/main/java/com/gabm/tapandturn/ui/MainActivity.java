@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
                     LinearLayout frame = (LinearLayout) getActivity().findViewById(R.id.preference_fragment); //Modify this for your fragment
 
                     ViewGroup.LayoutParams param = frame.getLayoutParams();
-                    param.height = height + (listView.getDividerHeight() * adapter.getCount());
+                    param.height = height + (100 + listView.getDividerHeight() * adapter.getCount());
                     frame.setLayoutParams(param);
                 }
             }
