@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,14 +35,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gabm.tapandturn.R;
+import com.gabm.tapandturn.TapAndTurnApplication;
 import com.gabm.tapandturn.sensors.OverlayPermissionSensor;
 import com.gabm.tapandturn.services.RotationControlService;
+import com.gabm.tapandturn.settings.SettingsKeys;
 import com.gabm.tapandturn.settings.SettingsManager;
 
 public class MainActivity extends AppCompatActivity implements Switch.OnCheckedChangeListener, Button.OnClickListener {
     private Switch serviceStateSwitch;
-    private Button requestPermissionButton;
-
+    private Button requestOverlayPermissionButton;
+    private Switch loggingStateSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +57,11 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         serviceStateSwitch = (Switch) findViewById(R.id.service_state_switch);
         serviceStateSwitch.setOnCheckedChangeListener(this);
 
+        loggingStateSwitch = (Switch)findViewById(R.id.logging_switch);
+        loggingStateSwitch.setOnCheckedChangeListener(this);;
 
-        requestPermissionButton = (Button) findViewById(R.id.request_button);
-        requestPermissionButton.setOnClickListener(this);
+        requestOverlayPermissionButton = (Button) findViewById(R.id.request_button);
+        requestOverlayPermissionButton.setOnClickListener(this);
 
         final ScrollView scrollview = ((ScrollView) findViewById(R.id.scrollview_content_main));
         scrollview.post(new Runnable() {
@@ -65,10 +70,6 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
                 scrollview.fullScroll(ScrollView.FOCUS_UP);
             }
         });
-
-
-        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        requestPermissions(permissions, 1234);
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment
@@ -160,25 +161,43 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
     }
 
     /** code to post/handler request for permission */
-    public final static int REQUEST_CODE = 5463;
+    public final static int REQUEST_OVERLAY_CODE = 5463;
+    public final static int REQUEST_WRITE_PERMISSION = 5464;
 
-    public void requestPermission() {
-        /** check if we already  have permission to draw over other apps */
+    public void requestOverlayPermission() {
+        /* check if we already  have permission to draw over other apps */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(getApplicationContext())) {
-                /** if not construct intent to request permission */
+                /* if not construct intent to request permission */
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                /** request permission via start activity for result */
-                startActivityForResult(intent, REQUEST_CODE);
+                /* request permission via start activity for result */
+                startActivityForResult(intent, REQUEST_OVERLAY_CODE);
             }
+        }
+    }
+
+    public boolean hasWritePermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestWritePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            requestPermissions(permissions, REQUEST_WRITE_PERMISSION);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
-        if (requestCode == REQUEST_CODE)
-            setPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
+        if (requestCode == REQUEST_OVERLAY_CODE)
+            setOverlayPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
+        else if (requestCode == REQUEST_WRITE_PERMISSION) {
+            TapAndTurnApplication.setLoggingEnabled(hasWritePermission());
+            setServiceStateSwitch(hasWritePermission());
+        }
     }
+
 
     @Override
     protected void onStop() {
@@ -193,13 +212,27 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
 
 
         setServiceStateSwitch(isServiceRunning(RotationControlService.class));
-        setPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
+        setOverlayPermissionGranted(OverlayPermissionSensor.getInstance().query(this));
+        setLoggingStateSwitch(TapAndTurnApplication.settings.getBoolean(SettingsKeys.LOGGING_ENABLED, false));
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         if (compoundButton == serviceStateSwitch)
             setServiceStateSwitch(applyNewServiceState(b));
+        else if (compoundButton == loggingStateSwitch) {
+            if (b) {
+                if (!hasWritePermission()) {
+                    requestWritePermission();
+                } else {
+                    TapAndTurnApplication.setLoggingEnabled(true);
+                }
+            }
+            else {
+                TapAndTurnApplication.setLoggingEnabled(false);
+            }
+        }
+
     }
 
     // borrowed from: https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
@@ -245,19 +278,23 @@ public class MainActivity extends AppCompatActivity implements Switch.OnCheckedC
         serviceStateSwitch.setChecked(started);
     }
 
-    private void setPermissionGranted(boolean granted) {
-        requestPermissionButton.setEnabled(!granted);
+    private void setLoggingStateSwitch(boolean on) {
+        loggingStateSwitch.setChecked(on);
+    }
+
+    private void setOverlayPermissionGranted(boolean granted) {
+        requestOverlayPermissionButton.setEnabled(!granted);
 
         if (granted)
-            requestPermissionButton.setText(R.string.permission_granted);
+            requestOverlayPermissionButton.setText(R.string.permission_granted);
         else
-            requestPermissionButton.setText(R.string.request_permission);
+            requestOverlayPermissionButton.setText(R.string.request_permission);
     }
 
     @Override
     public void onClick(View view) {
         if (!OverlayPermissionSensor.getInstance().query(this))
-            requestPermission();
+            requestOverlayPermission();
     }
 
 

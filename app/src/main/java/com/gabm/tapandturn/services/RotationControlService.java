@@ -57,13 +57,9 @@ public class RotationControlService extends Service implements PhysicalOrientati
     private AbsoluteOrientation handlerScreenOrientation;
     private final String TOGGLE_ACTIVE_BROADCAST = "ToggleActiveBroadcast";
 
-    private File logFile = null;
-    private FileOutputStream logfileOutputStream = null;
-    private OutputStreamWriter logfileWriter = null;
-
     @Override
     public void onClick(View view) {
-        log(Log.INFO, "OnClick", "User demanded rotation");
+        TapAndTurnApplication.log(Log.INFO, "OnClick", "User demanded rotation");
         orientationButtonOverlay.hide();
         if (handlerScreenOrientation.equals(physicalOrientationSensor.getCurScreenOrientation()))
             screenRotatorOverlay.forceOrientation(handlerScreenOrientation);
@@ -81,7 +77,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
         public void onReceive(Context context, Intent intent) {
             KeyguardManager kgm = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                log(Log.INFO, "BroadcastReceiver", "screen off");
+                TapAndTurnApplication.log(Log.INFO, "BroadcastReceiver", "screen off");
 
                 if (isActive) {
                     physicalOrientationSensor.disable();
@@ -94,7 +90,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON) && !kgm.isKeyguardLocked() ||
                        intent.getAction().equals(Intent.ACTION_USER_PRESENT))
             {
-                log(Log.INFO, "BroadcastReceiver", "screen on or user present");
+                TapAndTurnApplication.log(Log.INFO, "BroadcastReceiver", "screen on or user present");
 
                 if (isActive) {
                     physicalOrientationSensor.enable();
@@ -121,31 +117,9 @@ public class RotationControlService extends Service implements PhysicalOrientati
         unregisterReceiver(screenOffBroadcastReceiver);
     }
 
-    private void createLogfile() {
-        try {
-            logFile = new File(Environment.getExternalStorageDirectory() + "/tap_and_turn_log_" + System.currentTimeMillis() + ".txt");
-            logFile.createNewFile();
-            logfileOutputStream = new FileOutputStream(logFile);
-            logfileWriter = new OutputStreamWriter(logfileOutputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void destroyLogfile() {
-         try {
-            logfileWriter.close();
-            logfileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onCreate() {
-        createLogfile();
-
-        log(Log.INFO, "RotationService", "Service started");
+        TapAndTurnApplication.log(Log.INFO, "RotationService", "Service started");
 
 
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -187,7 +161,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
         if (isActive)
             return;
 
-        log(Log.INFO, "RotationService", "activated");
+        TapAndTurnApplication.log(Log.INFO, "RotationService", "activated");
 
         isActive = true;
         screenRotatorOverlay.forceOrientation(WindowManagerSensor.query(windowManager));
@@ -210,28 +184,15 @@ public class RotationControlService extends Service implements PhysicalOrientati
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        log(Log.INFO, "LocalService", "Received start id " + startId + ": " + intent);
+        TapAndTurnApplication.log(Log.INFO, "LocalService", "Received start id " + startId + ": " + intent);
         return START_STICKY;
     }
 
-    private void log(int level, String tag, String msg) {
-        Log.println(level, tag, msg);
-        try {
-            Calendar calendar = Calendar.getInstance();
-            Date now = calendar.getTime();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ");
-            String timestamp = simpleDateFormat.format(now);
-            logfileWriter.write(timestamp + " | " + level + " | " + tag + " | " + msg + "\n");
-            logfileWriter.flush();
-            logfileOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onDestroy() {
-        log(Log.INFO, "RotationService", "Service stopped");
+        TapAndTurnApplication.log(Log.INFO, "RotationService", "Service stopped");
 
         deactivate();
 
@@ -242,8 +203,6 @@ public class RotationControlService extends Service implements PhysicalOrientati
 
         // Tell the user we stopped.
         Toast.makeText(this, R.string.toast_service_stopped, Toast.LENGTH_SHORT).show();
-
-        destroyLogfile();
     }
 
     @Override
@@ -288,7 +247,7 @@ public class RotationControlService extends Service implements PhysicalOrientati
 
     @Override
     public void onOrientationChange(AbsoluteOrientation newOrientation) {
-        log(Log.INFO,"onOrientationChange", "old: " + screenRotatorOverlay.getCurrentlySetScreenOrientation().toString() + " new: " + newOrientation.toString());
+        TapAndTurnApplication.log(Log.INFO,"onOrientationChange", "old: " + screenRotatorOverlay.getCurrentlySetScreenOrientation().toString() + " new: " + newOrientation.toString());
 
         if (!OverlayPermissionSensor.getInstance().query(getApplicationContext())) {
             Toast.makeText(this, R.string.permission_lost, Toast.LENGTH_LONG).show();
@@ -299,14 +258,14 @@ public class RotationControlService extends Service implements PhysicalOrientati
             if (orientationButtonOverlay.isActive())
                 orientationButtonOverlay.hide();
 
-            log(Log.INFO,"onOrientationChange", "setting orientation to " + newOrientation.toString());
+            TapAndTurnApplication.log(Log.INFO,"onOrientationChange", "setting orientation to " + newOrientation.toString());
             screenRotatorOverlay.forceOrientation(newOrientation);
             return;
         }
 
         if (!newOrientation.equals(screenRotatorOverlay.getCurrentlySetScreenOrientation()) && !newOrientation.equals(AbsoluteOrientation.Enum.Unknown)) {
 
-            log(Log.INFO,"onOrientationChange", "displaying button in " + newOrientation.toString());
+            TapAndTurnApplication.log(Log.INFO,"onOrientationChange", "displaying button in " + newOrientation.toString());
             orientationButtonOverlay.show(screenRotatorOverlay.getCurrentlySetScreenOrientation(), newOrientation);
 
             // if the new orientation is different from what the user requested
